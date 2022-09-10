@@ -1,0 +1,25 @@
+{% extends './base.html' %}
+
+{% block content %}
+
+<div class="row" style="margin-top: 20%">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4">
+        <div class="card mt-5 shadow">
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control"></input>
+                        <div id="rusernameHelp" class="form-text">In game username.</div>
+                    </div>
+        
+                    <button type="submit" class="btn btn-dark">Submit</button>
+                </form>
+            </div>
+        </div>
+  </div>
+  <div class="col-lg-4"></div>
+</div>
+
+{% endblock %}

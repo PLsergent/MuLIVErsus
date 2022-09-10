@@ -1,0 +1,13 @@
+body {
+    font-family: 'Open Sans', sans-serif !important;
+}
+
+a.h1 {
+    color: #d4248b;
+    text-decoration: none;
+}
+
+a.h1:hover {
+    color: black;
+    font-weight: bold;
+}
