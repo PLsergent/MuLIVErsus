@@ -19,6 +19,7 @@ class Characters(enum.Enum):
     Velma = {"name": "Velma", "slug": "character_velma"}
     IronGiant = {"name": "Iron Giant", "slug": "character_C017"}
     LebronJames = {"name": "Lebron James", "slug": "character_c16"}
+    Morty = {"name": "Morty", "slug": "character_c019"}
     Gizmo = {"name": "Gizmo", "slug": "character_C023A"}
 
 

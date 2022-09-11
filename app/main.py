@@ -52,28 +52,31 @@ def profile(request: Request, id: str):
     except:
         user = mlpyvrs.get_user_by_id(id)
 
-    total_win = user.get_match_won_count(GamemodeMatches.OneVsOne)+user.get_match_won_count(GamemodeMatches.TwoVsTwo)
-    total_loss = user.get_match_lost_count(GamemodeMatches.OneVsOne)+user.get_match_lost_count(GamemodeMatches.TwoVsTwo)
-    total_win_percentage = round(user.get_global_win_percentage(), 2)
+    try:
+        total_win = user.get_match_won_count(GamemodeMatches.OneVsOne)+user.get_match_won_count(GamemodeMatches.TwoVsTwo)
+        total_loss = user.get_match_lost_count(GamemodeMatches.OneVsOne)+user.get_match_lost_count(GamemodeMatches.TwoVsTwo)
+        total_win_percentage = round(user.get_global_win_percentage(), 2)
 
-    # Top characters
-    top_characters_slug = user.get_top_three_character_wins()
-    top_characters = {}
-    for character_slug, wins in top_characters_slug.items():
-        character = get_character_from_slug(character_slug)
-        top_characters[character.value["name"]] = {
-            "wins": wins,
-            "OvO_MMR": round(user.get_character_rating(character, RatingKeys.Mean, GamemodeRating.OneVsOne), 0),
-            "TvT_MMR": round(user.get_character_rating(character, RatingKeys.Mean, GamemodeRating.TwoVsTwo), 0)
-        }
+        # Top characters
+        top_characters_slug = user.get_top_character_wins()
+        top_characters = {}
+        for character_slug, wins in top_characters_slug.items():
+            character = get_character_from_slug(character_slug)
+            top_characters[character.value["name"]] = {
+                "wins": wins,
+                "OvO_MMR": round(user.get_character_rating(character, RatingKeys.Mean, GamemodeRating.OneVsOne), 0),
+                "TvT_MMR": round(user.get_character_rating(character, RatingKeys.Mean, GamemodeRating.TwoVsTwo), 0)
+            }
 
-    # 1v1
-    OneVsOne_infos = get_user_info_for_gamemode(mlpyvrs, user, GamemodeRating.OneVsOne, GamemodeRank.OneVsOne)
+        # 1v1
+        OneVsOne_infos = get_user_info_for_gamemode(mlpyvrs, user, GamemodeRating.OneVsOne, GamemodeRank.OneVsOne)
 
-    # 2v2
-    TwoVsTwo_infos = get_user_info_for_gamemode(mlpyvrs, user, GamemodeRating.TwoVsTwo, GamemodeRank.TwoVsTwo)
+        # 2v2
+        TwoVsTwo_infos = get_user_info_for_gamemode(mlpyvrs, user, GamemodeRating.TwoVsTwo, GamemodeRank.TwoVsTwo)
 
-    username = OneVsOne_infos["username"]
+        username = OneVsOne_infos["username"]
+    except:
+        return templates.TemplateResponse("404.html", {"request": request, "title": "404"})
     
     return templates.TemplateResponse("profile.html",
         {"request": request, "title": "Profile", "username": username, "user": user,
@@ -98,9 +101,11 @@ def live(request: Request, id: str):
     state = last_match.get_state()
     if state == "open":
         if len(last_match.rawData["players"]["current"]) == 1:
+            match_type = "1v1"
             title = f"Waiting for a game to start..."
-        match_type = "1v1" if len(last_match.rawData["players"]["current"]) == 2 else "2v2"
-        title = f"Live - {match_type}"
+        else:
+            match_type = "1v1" if len(last_match.rawData["players"]["current"]) == 2 else "2v2"
+            title = f"Live - {match_type}"
     else:
         match_type = "1v1" if last_match.get_player_ammount_in_match() == 2 else "2v2"
         title = f"Finished - {match_type}"

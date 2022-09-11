@@ -2,6 +2,13 @@
 
 {% block content %}
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ username | title }}</li>
+    </ol>
+</nav>
+
 <div class="card mb-5" style="border-radius: 0.5rem; border-left: 5px solid #cb1ca5">
     <div class="card-body">
         <h5 class="card-title">{{ user.get_user_level() }} lvl</h5>
@@ -15,16 +22,38 @@
     </div>
 </div>
 
-<h2 class="display-6">Top characters <img width="45px" src="{{ url_for('static', path='witch.png') }}"></img></h2>
+<h2 class="display-6">Top characters <img width="50px" src="{{ url_for('static', path='character.png') }}"></img></h2>
 <hr>
 {% for name, char in top_characters.items() %}
+{% if loop.index > 3 %}
+<div class="collapse" id="charcollapse">
+    <div class="row">
+        <div class="col-lg-3">
+            <h3><img height="40px" src="{{ url_for('static', path='/characters/'+name+'.png') }}"> {{ name }}</h2>
+        </div>
+        <div class="col-lg-3"><h3>{{ char.wins }} <small class="text-muted">wins</small></h3></div>
+        <div class="col-lg-3"><h3>{{ char.OvO_MMR }} <small class="text-muted">1's mmr</small></h3></div>
+        <div class="col-lg-3"><h3>{{ char.TvT_MMR }} <small class="text-muted">2's mmr</small></h3></div>
+    </div>
+</div>
+{% else %}
 <div class="row">
-    <div class="col-lg-3"><h3>{{ name }}</h2></div>
+    <div class="col-lg-3">
+        <h3><img height="40px" src="{{ url_for('static', path='/characters/'+name+'.png') }}"> {{ name }}</h2>
+    </div>
     <div class="col-lg-3"><h3>{{ char.wins }} <small class="text-muted">wins</small></h3></div>
     <div class="col-lg-3"><h3>{{ char.OvO_MMR }} <small class="text-muted">1's mmr</small></h3></div>
     <div class="col-lg-3"><h3>{{ char.TvT_MMR }} <small class="text-muted">2's mmr</small></h3></div>
 </div>
+{% endif %}
+
 {% endfor %}
+
+{% if top_characters | length > 3 %}
+<a class="btn btn-danger" data-bs-toggle="collapse" href="#charcollapse" role="button" aria-expanded="false" aria-controls="charcollapse">
+    More ({{ top_characters | length }})
+</a>
+{% endif %}
 
 <hr class="mb-5">
 
