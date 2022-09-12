@@ -1,4 +1,5 @@
 import json
+import random
 import string
 from mulpyversus.mulpyversus import *
 from mulpyversus.utils import *
@@ -284,7 +285,7 @@ class User:
     def get_total_loss(self) -> int:
         return self.get_matches_played()-self.get_total_wins()
 
-    def get_wins_with_character(self, characterName : Characters) -> int:
+    def get_wins_with_character(self, character : Characters) -> int:
         """Return the number of winss with the character
         ::
         To use this, use Characters.NAMEOFCHARS
@@ -292,10 +293,9 @@ class User:
         Usage Example:
             >>> .get_wins_with_character(Characters.WonderWoman)
         """
-        if characterName.value["slug"] in self.profileData['server_data']['stat_trackers']['character_wins'] :
-            return self.profileData['server_data']['stat_trackers']['character_wins'][characterName.value["slug"]]
-        else:
+        if character is None or character.value["slug"] not in self.profileData['server_data']['stat_trackers']['character_wins']:
             return 0
+        return self.profileData['server_data']['stat_trackers']['character_wins'][character.value["slug"]]
 
     def get_total_attacks_dodged(self) -> int:
         return self.profileData['server_data']['stat_trackers']['TotalAttacksDodged'] if 'TotalAttacksDodged' in self.profileData['server_data']['stat_trackers'] else 0
@@ -387,6 +387,8 @@ class User:
             >>> .get_top_ranked_character(GamemodeRating.NAMEOGAMEMODE)
         """
         maxKey = 0
+        if gm.value not in self.profileData['server_data']:
+            return random.choice(list(Characters)).value["slug"]
         for key in self.profileData['server_data'][gm.value]:
             maxKey = int(key) if int(key)>maxKey else maxKey
         if "topRating" in self.profileData['server_data'][gm.value][str(maxKey)]:

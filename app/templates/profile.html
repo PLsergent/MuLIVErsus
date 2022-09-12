@@ -49,7 +49,7 @@
 
 {% endfor %}
 
-{% if top_characters | length > 3 %}
+{% if top_characters | length >  3 %}
 <a class="btn btn-danger" data-bs-toggle="collapse" href="#charcollapse" role="button" aria-expanded="false" aria-controls="charcollapse">
     More ({{ top_characters | length }})
 </a>
@@ -60,10 +60,10 @@
 <h2 class="display-6">1v1 <img width="45px" src="{{ url_for('static', path='fight1.png') }}"></img></h2>
 <hr>
 <div class="row">
-    <div class="col-lg-3"><h3>{{ OneVsOne_infos.char_topranked }}</h2></div>
+    <div class="col-lg-3"><h3>{{ OneVsOne_infos.char_top_ranked }}</h2></div>
     <div class="col-lg-3"><h3>{{ OneVsOne_infos.top_rating }} <small class="text-muted">mmr</small></h2></div>
-    <div class="col-lg-3"><h3>{{ OneVsOne_infos.rank }} <small class="text-muted">rank</small></h2></div>
-    <div class="col-lg-3"><h3>{{ OneVsOne_infos.topranked_win }} <small class="text-muted">wins</small></h2></div>
+    <div class="col-lg-3"><h3>{{ OneVsOne_infos.top_rank }} <small class="text-muted">rank</small></h2></div>
+    <div class="col-lg-3"><h3>{{ OneVsOne_infos.top_ranked_win }} <small class="text-muted">wins</small></h2></div>
 </div>
 
 <hr class="mb-5">
@@ -71,10 +71,10 @@
 <h2 class="display-6">2v2 <img width="45px" src="{{ url_for('static', path='fight.png') }}"></img></h2>
 <hr>
 <div class="row" style="margin-bottom: 100px;">
-    <div class="col-lg-3"><h3>{{ TwoVsTwo_infos.char_topranked }}</h2></div>
+    <div class="col-lg-3"><h3>{{ TwoVsTwo_infos.char_top_ranked }}</h2></div>
     <div class="col-lg-3"><h3>{{ TwoVsTwo_infos.top_rating }} <small class="text-muted">mmr</small></h2></div>
-    <div class="col-lg-3"><h3>{{ TwoVsTwo_infos.rank }} <small class="text-muted">rank</small></h2></div>
-    <div class="col-lg-3"><h3>{{ TwoVsTwo_infos.topranked_win }} <small class="text-muted">wins</small></h2></div>
+    <div class="col-lg-3"><h3>{{ TwoVsTwo_infos.top_rank }} <small class="text-muted">rank</small></h2></div>
+    <div class="col-lg-3"><h3>{{ TwoVsTwo_infos.top_ranked_win }} <small class="text-muted">wins</small></h2></div>
 </div>
 
 {% endblock %}

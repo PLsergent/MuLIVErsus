@@ -31,4 +31,7 @@ class UserMatchHistory:
     
     def get_last_match(self):
         """Returns the last match of this user"""
-        return Match(self.rawData[0]["id"], self.mlpyvrs)
+        if self.rawData:
+            return Match(self.rawData[0]["id"], self.mlpyvrs)
+        else:
+            return None

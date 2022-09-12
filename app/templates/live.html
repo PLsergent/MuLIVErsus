@@ -40,20 +40,20 @@
 <div class="row" style="margin-bottom: 50px">
     {% for player in players %}
         <div class="col-lg-6 mb-3">
-            <div class="card" style="border-radius: 0.5rem; border-left: 5px solid #000000">
+            <div href="/{{ player.id }}" class="card live-card" style="border-radius: 0.5rem; border-left: 5px solid #000000">
                 <div class="card-body">
-                    <a href="/{{ player.id }}" class="h1 card-title">{{ player.username }}</a>
+                    <a href="/{{ player.id }}" class="h1 card-title stretched-link">{{ player.username }}</a>
                     <div class="row">
                         <div class="col-lg-4"><h4>{{ player.total_win }} <small class="text-muted">wins</small></h4></div>
                         <div class="col-lg-4"><h4>{{ player.total_win_percentage }}<small class="text-muted">%</small></h4></div>
                         <div class="col-lg-4"><h4>{{ player.total_ringouts }} <small class="text-muted">ringouts</small></h4></div>
                     </div>
-                    <h4><small class="text-muted">Best character:</small> {{ player.char_topranked }}</h4>
-                    <img class="mb-3" width="150px" src="{{ url_for('static', path='/characters/'+player.char_topranked+'.png') }}" alt="{{ player.char_topranked }}">
+                    <h4><small class="text-muted">Best character:</small> {{ player.char_top_ranked }}</h4>
+                    <img class="mb-3" width="150px" src="{{ url_for('static', path='/characters/'+player.char_top_ranked+'.png') }}" alt="{{ player.char_top_ranked }}">
                     <div class="row">
-                        <div class="col-lg-4"><h4><small class="text-muted">{{ player.char_topranked }}</small></h4></div>
+                        <div class="col-lg-4"><h4><small class="text-muted">{{ player.char_top_ranked }}</small></h4></div>
                         <div class="col-lg-4"><h3>{{ player.top_rating }} <small class="text-muted">mmr</small></h3></div>
-                        <div class="col-lg-4"><h3>{{ player.rank }}<small class="text-muted">#</small></h3></div>
+                        <div class="col-lg-4"><h3>{{ player.top_rank }}<small class="text-muted">#</small></h3></div>
                     </div>
                 </div>
             </div>

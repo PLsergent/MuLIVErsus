@@ -38,10 +38,12 @@ def get_user_info_for_gamemode(mlpyvrs, user, gmrating : GamemodeRating, gmrank 
     info["total_ringouts"] = user.get_total_ringouts()
     OneVsOne_slug_topranked = user.get_top_ranked_character_in_gamemode(gmrating)
     char = get_character_from_slug(OneVsOne_slug_topranked)
-    info["topranked_win"] = user.get_wins_with_character(char)
-    info["char_topranked"] = char.value["name"]
+    info["top_ranked_win"] = user.get_wins_with_character(char)
+    info["char_top_ranked"] = char.value["name"] 
     info["top_rating"] = round(user.get_character_rating(char, RatingKeys.Mean, gmrating), 0)
-    info["rank"] = "{:,}".format(mlpyvrs.get_user_leaderboard(user.get_account_id()).get_rank_in_gamemode(gmrank))
+    info["top_rank"] = -1
+    if mlpyvrs.get_user_leaderboard(user.get_account_id()).get_rank_in_gamemode(gmrank) is not None:
+        info["top_rank"] = "{:,}".format(mlpyvrs.get_user_leaderboard(user.get_account_id()).get_rank_in_gamemode(gmrank))
     return info
 
 @app.get("/{id}")
@@ -52,32 +54,32 @@ def profile(request: Request, id: str):
     except:
         user = mlpyvrs.get_user_by_id(id)
 
-    try:
-        total_win = user.get_match_won_count(GamemodeMatches.OneVsOne)+user.get_match_won_count(GamemodeMatches.TwoVsTwo)
-        total_loss = user.get_match_lost_count(GamemodeMatches.OneVsOne)+user.get_match_lost_count(GamemodeMatches.TwoVsTwo)
-        total_win_percentage = round(user.get_global_win_percentage(), 2)
+    if "stat_trackers" not in user.profileData['server_data']:
+        return templates.TemplateResponse("404.html", {"request": request, "title": "No data found", "message": "No data found for this user."})
 
-        # Top characters
-        top_characters_slug = user.get_top_character_wins()
-        top_characters = {}
-        for character_slug, wins in top_characters_slug.items():
-            character = get_character_from_slug(character_slug)
-            top_characters[character.value["name"]] = {
-                "wins": wins,
-                "OvO_MMR": round(user.get_character_rating(character, RatingKeys.Mean, GamemodeRating.OneVsOne), 0),
-                "TvT_MMR": round(user.get_character_rating(character, RatingKeys.Mean, GamemodeRating.TwoVsTwo), 0)
-            }
+    total_win = user.get_match_won_count(GamemodeMatches.OneVsOne)+user.get_match_won_count(GamemodeMatches.TwoVsTwo)
+    total_loss = user.get_match_lost_count(GamemodeMatches.OneVsOne)+user.get_match_lost_count(GamemodeMatches.TwoVsTwo)
+    total_win_percentage = round(user.get_global_win_percentage(), 2)
 
-        # 1v1
-        OneVsOne_infos = get_user_info_for_gamemode(mlpyvrs, user, GamemodeRating.OneVsOne, GamemodeRank.OneVsOne)
+    # Top characters
+    top_characters_slug = user.get_top_character_wins()
+    top_characters = {}
+    for character_slug, wins in top_characters_slug.items():
+        character = get_character_from_slug(character_slug)
+        top_characters[character.value["name"]] = {
+            "wins": wins,
+            "OvO_MMR": round(user.get_character_rating(character, RatingKeys.Mean, GamemodeRating.OneVsOne), 0),
+            "TvT_MMR": round(user.get_character_rating(character, RatingKeys.Mean, GamemodeRating.TwoVsTwo), 0)
+        }
 
-        # 2v2
-        TwoVsTwo_infos = get_user_info_for_gamemode(mlpyvrs, user, GamemodeRating.TwoVsTwo, GamemodeRank.TwoVsTwo)
+    # 1v1
+    OneVsOne_infos = get_user_info_for_gamemode(mlpyvrs, user, GamemodeRating.OneVsOne, GamemodeRank.OneVsOne)
 
-        username = OneVsOne_infos["username"]
-    except:
-        return templates.TemplateResponse("404.html", {"request": request, "title": "404"})
-    
+    # 2v2
+    TwoVsTwo_infos = get_user_info_for_gamemode(mlpyvrs, user, GamemodeRating.TwoVsTwo, GamemodeRank.TwoVsTwo)
+
+    username = OneVsOne_infos["username"]
+        
     return templates.TemplateResponse("profile.html",
         {"request": request, "title": "Profile", "username": username, "user": user,
         "total_win": total_win, "total_loss": total_loss, "total_win_percentage": total_win_percentage,
@@ -97,6 +99,9 @@ def live(request: Request, id: str):
             username = network.get_network_user_username()
     user_match_history = mlpyvrs.get_user_match_history(user)
     last_match = user_match_history.get_last_match()
+
+    if last_match is None:
+        return templates.TemplateResponse("404.html", {"request": request, "title": "No data found", "message": "No match found for this user."})
 
     state = last_match.get_state()
     if state == "open":
