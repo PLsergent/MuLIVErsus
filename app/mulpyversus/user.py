@@ -156,6 +156,15 @@ class User:
         """
         self.__init__(self.get_account_id(), self)
 
+    def get_code(self) -> string:
+        """Returns the code of the user
+        ::
+        Usage Example:
+            ::
+            someone.get_code()
+        """
+        return self.profileData["code"]
+
     def get_id(self) -> string:
         return self.profileData['id']
 

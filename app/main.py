@@ -54,7 +54,7 @@ def profile(request: Request, id: str):
     except:
         user = mlpyvrs.get_user_by_id(id)
 
-    if "stat_trackers" not in user.profileData['server_data']:
+    if ("code" in user.profileData and user.get_code() == 404) or "stat_trackers" not in user.profileData['server_data']:
         return templates.TemplateResponse("404.html", {"request": request, "title": "No data found", "message": "No data found for this user."})
 
     total_win = user.get_match_won_count(GamemodeMatches.OneVsOne)+user.get_match_won_count(GamemodeMatches.TwoVsTwo)
