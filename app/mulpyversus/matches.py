@@ -160,10 +160,11 @@ class Match:
         return self.rawData['map']
 
     def get_player_data_by_id(self, id : int):
-        if self.get_player_ammount_in_match()-1 <= id and id>0:
-            return PlayerMatchData(self.rawData['server_data']['PlayerData'][id], self.mlpyvrs)
-        else:
-            raise ValueError('The id you passed is invalid (too big or too small) - Use get_player_ammount_in_match() to know total ammount of players.')
+        """Gets the player data by id."""
+        if self.rawData and "server_data" in self.rawData:
+            for data in self.rawData["server_data"]["PlayerData"]:
+                if data["AccountId"] == id:
+                    return PlayerMatchData(data, self.mlpyvrs)
         
     def get_all_players_data_in_match(self) -> list[PlayerMatchData]:
         return [PlayerMatchData(data , self.mlpyvrs) for data in self.rawData['server_data']['PlayerData']]
@@ -185,5 +186,16 @@ class Match:
     
     def get_match_min_players(self)-> int:
         return self.rawData['template']['min_players']
+    
+    def get_rating_update(self, id):
+        """Returns the rating update in the last match from user id"""
+        if self.rawData and "data" in self.rawData:
+            for data in self.rawData["data"]["ratingUpdates"]["playerRatingChanges"]:
+                if data["playerAccountID"] == id:
+                    preMatchRating = data["preMatchRating"]["mean"] if "preMatchRating" in data else 0
+                    postMatchRating = data["postMatchRating"]["mean"] if "postMatchRating" in data else 0
+                    return round(postMatchRating - preMatchRating, 0)
+        else:
+            return None
 
   

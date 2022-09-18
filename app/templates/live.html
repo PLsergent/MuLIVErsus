@@ -40,7 +40,13 @@
 <div class="row" style="margin-bottom: 50px">
     {% for player in players %}
         <div class="col-lg-6 mb-3">
-            <div href="/{{ player.id }}" class="card live-card" style="border-radius: 0.5rem; border-left: 5px solid #000000">
+            {% if player.rating_updates > 0 %}
+            <div href="/{{ player.id }}" class="card live-card" style="border-radius: 0.5rem; border: 5px solid #179637">
+            {% elif player.rating_updates < 0 %}
+            <div href="/{{ player.id }}" class="card live-card" style="border-radius: 0.5rem; border: 5px solid #e74b4b">
+            {% else %}
+            <div href="/{{ player.id }}" class="card live-card" style="border-radius: 0.5rem; border-left: 5px solid #4b0d75">
+            {% endif %}
                 <div class="card-body">
                     <a href="/{{ player.id }}" class="h1 card-title stretched-link">{{ player.username }}</a>
                     <div class="row">
@@ -48,12 +54,17 @@
                         <div class="col-lg-4"><h4>{{ player.total_win_percentage }}<small class="text-muted">%</small></h4></div>
                         <div class="col-lg-4"><h4>{{ player.total_ringouts }} <small class="text-muted">ringouts</small></h4></div>
                     </div>
-                    <h4><small class="text-muted">Best character:</small> {{ player.char_top_ranked }}</h4>
-                    <img class="mb-3" width="150px" src="{{ url_for('static', path='/characters/'+player.char_top_ranked+'.png') }}" alt="{{ player.char_top_ranked }}">
+                    <h4><small class="text-muted">{% if title.startswith('Finished') %}Played: {% else %}Best character:{% endif %}</small> {{ player.char }} <small class="text-dark">{{ player.score }}</small></h4>
+                    <img class="mb-3" width="150px" src="{{ url_for('static', path='/characters/'+player.char+'.png') }}" alt="{{ player.char }}">
                     <div class="row">
-                        <div class="col-lg-4"><h4><small class="text-muted">{{ player.char_top_ranked }}</small></h4></div>
-                        <div class="col-lg-4"><h3>{{ player.top_rating }} <small class="text-muted">mmr</small></h3></div>
-                        <div class="col-lg-4"><h3>{{ player.top_rank }}<small class="text-muted">#</small></h3></div>
+                        {% if player.rating_updates > 0 %}
+                            <div class="col-lg-6"><h3>{{ player.rating }} <small class="text-success">+{{ player.rating_updates }}</small><small class="text-muted"> mmr</small></h3></div>
+                        {% elif player.rating_updates < 0 %}
+                            <div class="col-lg-6"><h3>{{ player.rating }} <small class="text-danger">{{ player.rating_updates }}</small><small class="text-muted"> mmr</small></h3></div>
+                        {% else %}
+                            <div class="col-lg-6"><h3>{{ player.rating }}<small class="text-muted"> mmr</small></h3></div>
+                        {% endif %}
+                        <div class="col-lg-6"><h3><small class="text-muted">Best rank:</small> {{ player.rank }}<small class="text-muted"> #</small></h3></div>
                     </div>
                 </div>
             </div>
