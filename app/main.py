@@ -20,7 +20,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "title": "Home", "host": f"{request.url.scheme}://{request.url.netloc}"})
+    return templates.TemplateResponse("index.html", {"request": request, "title": "Home"})
 
 @app.post("/")
 def login(username: str = Form()):
@@ -94,7 +94,7 @@ def profile(request: Request, id: str):
         {"request": request, "title": "Profile", "username": username, "user": user,
         "total_win": total_win, "total_loss": total_loss, "total_win_percentage": total_win_percentage,
         "top_characters": top_characters,
-        "OneVsOne_infos": OneVsOne_infos, "TwoVsTwo_infos": TwoVsTwo_infos, "host": f"{request.url.scheme}://{request.url.netloc}"})
+        "OneVsOne_infos": OneVsOne_infos, "TwoVsTwo_infos": TwoVsTwo_infos})
     
 @app.get("/{id}/live")
 def live(request: Request, id: str):
@@ -138,4 +138,4 @@ def live(request: Request, id: str):
     except:
         traceback.print_exc()
         return templates.TemplateResponse("404.html", {"request": request, "title": "Error", "message": "Error while fetching data."})
-    return templates.TemplateResponse("live.html", {"request": request, "title": title, "username": username, "players": players, "host": f"{request.url.scheme}://{request.url.netloc}"})
+    return templates.TemplateResponse("live.html", {"request": request, "title": title, "username": username, "players": players})
