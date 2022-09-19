@@ -1,7 +1,7 @@
 import json
-from mulpyversus.user import User
-from mulpyversus.matches import Match
-from mulpyversus.utils import *
+from app.mulpyversus.user import User
+from app.mulpyversus.matches import Match
+from app.mulpyversus.utils import *
 
 
 class UserMatchHistory:

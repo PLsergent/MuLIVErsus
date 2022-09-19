@@ -1,5 +1,5 @@
 import string
-from mulpyversus.utils import *
+from app.mulpyversus.utils import *
 
 class UserNetwork:
     """Represent a UserNetwork object

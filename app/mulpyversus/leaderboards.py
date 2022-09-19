@@ -1,8 +1,8 @@
 import json
 import string
-from mulpyversus.mulpyversus import *
-from mulpyversus.user import *
-from mulpyversus.utils import *
+from app.mulpyversus.mulpyversus import *
+from app.mulpyversus.user import *
+from app.mulpyversus.utils import *
 
 class UserLeaderboard:
     """Represent a UserLeaderboard object

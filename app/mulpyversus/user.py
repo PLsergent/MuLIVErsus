@@ -1,8 +1,8 @@
 import json
 import random
 import string
-from mulpyversus.mulpyversus import *
-from mulpyversus.utils import *
+from app.mulpyversus.mulpyversus import *
+from app.mulpyversus.utils import *
 
 
 class UserNetwork:
@@ -467,7 +467,10 @@ class User:
         Usage Example:
             >>> .get_match_lost_count(GamemodeMatches.NAMEOGAMEMODE)
         """
-        return self.profileData['matches'][gm.value]["loss"] if gm.value in self.profileData['matches'] else 0
+        try:
+            return self.profileData['matches'][gm.value]["loss"] if gm.value in self.profileData['matches'] else 0
+        except:
+            return 0
 
     def get_match_won_count(self, gm : GamemodeMatches):
         """Return amount of games won in specified GamemodeMatches
@@ -478,7 +481,10 @@ class User:
         Usage Example:
             >>> .get_match_won_count(GamemodeMatches.NAMEOGAMEMODE)
         """
-        return self.profileData['matches'][gm.value]["win"] if gm.value in self.profileData['matches'] else 0
+        try:
+            return self.profileData['matches'][gm.value]["win"] if gm.value in self.profileData['matches'] else 0
+        except:
+            return 0
     
     def get_global_win_percentage(self, gm : GamemodeMatches=None):
         """Return global win percentage

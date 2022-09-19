@@ -1,0 +1,24 @@
+name: Deploy latest version
+on: [push]
+jobs:
+  build:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Executing remote ssh commands
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: |
+          cd MuLIVErsus
+          git config --global user.email "papa.louis59@gmail.com"
+          git config --global user.name "Pierre-Louis Sergent"
+          git pull
+          docker stop muliversus_app
+          docker rm muliversus_app
+          docker image rm muliversus
+          docker build -t muliversus .
+          docker run -d --name muliversus_app -p 8081:8081 muliversus
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        passphrase: ${{ secrets.PASSWORD }}
+        privateKey: ${{ secrets.KEY }}

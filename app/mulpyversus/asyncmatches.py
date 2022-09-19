@@ -1,5 +1,5 @@
 import string
-from mulpyversus.asyncuser import AsyncUser
+from app.mulpyversus.asyncuser import AsyncUser
 import json
 
 class AsyncPlayerMatchData:

@@ -4,10 +4,10 @@ import requests
 import aiohttp
 import asyncio
 import json
-from mulpyversus.asyncleaderboards import *
-from mulpyversus.asyncuser import AsyncUser
-from mulpyversus.asyncmatches import AsyncMatch
-from mulpyversus.utils import *
+from app.mulpyversus.asyncleaderboards import *
+from app.mulpyversus.asyncuser import AsyncUser
+from app.mulpyversus.asyncmatches import AsyncMatch
+from app.mulpyversus.utils import *
 
 class AsyncUsernameSearchResult():
     """Represent a response to a search by username.
@@ -120,9 +120,9 @@ class AsyncMulpyVersus:
         Optional: You can pass a new steam token if you want to change it
         Usage Example:
             ::
-                mulpyversus.refresh_token()
+                app.mulpyversus.refresh_token()
                 or
-                mulpyversus.refresh_token("aNewSteamToken")
+                app.mulpyversus.refresh_token("aNewSteamToken")
         """
         if not steamToken is None:
             self.steamToken = steamToken

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="{{ url_for('static', path='/steven.jpg') }}" type="image/x-icon">
-    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet" crossorigin="anonymous">
+    <link rel="icon" href="{{ host }}/static/steven.jpg" type="image/x-icon">
+    <link href="{{ host }}/static/style.css" rel="stylesheet" crossorigin="anonymous">
     <script src="https://cdn.lordicon.com/xdjxvujz.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
@@ -23,7 +23,7 @@
     >
     <nav class="navbar navbar-light bg-light mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><b>MuLIVErsus</b> <img width="35px" src="{{ url_for('static', path='steven.jpg') }}"></img></a>
+            <a class="navbar-brand" href="/"><b>MuLIVErsus</b> <img width="35px" src="{{ host }}/static/steven.jpg"></img></a>
         </div>
     </nav>
 
@@ -37,7 +37,7 @@
         <span class="text-muted fw-bold mx-3">
             <a class="text-decoration-none" href="https://github.com/PLsergent/MuLIVErsus">
                 @plsergent
-                <img width="20px" src="{{ url_for('static', path='/github.png') }}">
+                <img width="20px" src="{{ host }}/static/github.png">
             </a>
         </span>
     </footer>

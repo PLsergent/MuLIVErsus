@@ -1,9 +1,9 @@
 import json
 import string
-from mulpyversus.asyncuser import AsyncUser
-from mulpyversus.mulpyversus import *
-from mulpyversus.user import *
-from mulpyversus.utils import *
+from app.mulpyversus.asyncuser import AsyncUser
+from app.mulpyversus.mulpyversus import *
+from app.mulpyversus.user import *
+from app.mulpyversus.utils import *
 
 class AsyncUserLeaderboard:
     """Represent a UserLeaderboard object

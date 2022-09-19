@@ -3,11 +3,11 @@ from math import ceil
 import string
 import requests
 import json
-from mulpyversus.matches import Match
-from mulpyversus.user import User
-from mulpyversus.user_matches_history import UserMatchHistory
-from mulpyversus.leaderboards import *
-from mulpyversus.utils import *
+from app.mulpyversus.matches import Match
+from app.mulpyversus.user import User
+from app.mulpyversus.user_matches_history import UserMatchHistory
+from app.mulpyversus.leaderboards import *
+from app.mulpyversus.utils import *
 
 class UsernameSearchResult():
     """Represent a response to a search by username.
@@ -119,9 +119,9 @@ class MulpyVersus:
         Optional: You can pass a new steam token if you want to change it
         Usage Example:
             ::
-                mulpyversus.refresh_token()
+                app.mulpyversus.refresh_token()
                 or
-                mulpyversus.refresh_token("aNewSteamToken")
+                app.mulpyversus.refresh_token("aNewSteamToken")
         """
         if not steamToken is None:
             self.steamToken = steamToken
@@ -176,7 +176,7 @@ class MulpyVersus:
         You can also use User.refresh() to refresh a User
         Usage Example:
             ::
-            MulpyVersus.refresh_user(someone)
+            app.mulpyversus.refresh_user(someone)
         """
         user.__init__(user.get_account_id(), self)
 

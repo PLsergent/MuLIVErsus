@@ -1,5 +1,5 @@
 import string
-from mulpyversus.user import User
+from app.mulpyversus.user import User
 import json
 
 
