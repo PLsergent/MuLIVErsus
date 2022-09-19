@@ -1,3 +1,4 @@
+import traceback
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -47,7 +48,7 @@ def get_user_info_for_gamemode(mlpyvrs, user, gmrating : GamemodeRating, gmrank 
     info["rating_updates"] = 0
     info["score"] = ""
     if match is not None and match.get_state() != "open":
-        info["rating_updates"] = match.get_rating_update(info["id"])
+        info["rating_updates"] = match.get_rating_update(info["id"]) if match.get_rating_update(info["id"]) is not None else 0
         info["score"] = match.get_player_data_by_id(info["id"]).get_score()
     return info
 
@@ -86,6 +87,7 @@ def profile(request: Request, id: str):
 
         username = OneVsOne_infos["username"]
     except:
+        traceback.print_exc()
         return templates.TemplateResponse("404.html", {"request": request, "title": "Error", "message": "Error while fetching data."})
         
     return templates.TemplateResponse("profile.html",
@@ -134,5 +136,6 @@ def live(request: Request, id: str):
             for id in last_match.rawData["win"] + last_match.rawData["loss"]:
                 players.append(get_user_info_for_gamemode(mlpyvrs, mlpyvrs.get_user_by_id(id), gmrating, gmrank, match=last_match))
     except:
+        traceback.print_exc()
         return templates.TemplateResponse("404.html", {"request": request, "title": "Error", "message": "Error while fetching data."})
     return templates.TemplateResponse("live.html", {"request": request, "title": title, "username": username, "players": players})
