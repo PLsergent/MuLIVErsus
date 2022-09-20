@@ -12,7 +12,7 @@
 <div class="card mb-5" style="border-radius: 0.5rem; border-left: 5px solid #cb1ca5">
     <div class="card-body">
         <h5 class="card-title">{{ user.get_user_level() }} lvl</h5>
-        <h1>{{ username | title }} <a href="/{{ user.get_account_id() }}/live" class="btn btn-secondary">Live <img width="25px" src="{{ url_for('static', path='live.png') }}" alt=""></a></h1>
+        <h1>{{ username | title }} <a href="/{{ user.get_account_id() }}/live" class="btn btn-secondary">Live <img width="25px" src="{{ request.app.url_path_for('static', path='live.png') }}" alt=""></a></h1>
         <div class="row">
             <div class="col-lg-3"><h3>{{ total_win }} <small class="text-muted">wins</small></h3></div>
             <div class="col-lg-3"><h3>{{ total_loss }} <small class="text-muted">losses</small></h3></div>
@@ -22,14 +22,14 @@
     </div>
 </div>
 
-<h2 class="display-6">Top characters <img width="50px" src="{{ url_for('static', path='character.png') }}"></img></h2>
+<h2 class="display-6">Top characters <img width="50px" src="{{ request.app.url_path_for('static', path='character.png') }}"></img></h2>
 <hr>
 {% for name, char in top_characters.items() %}
 {% if loop.index > 3 %}
 <div class="collapse" id="charcollapse">
     <div class="row">
         <div class="col-lg-3">
-            <h3><img height="40px" src="{{ url_for('static', path='/characters/'+name+'.png') }}"> {{ name }}</h2>
+            <h3><img height="40px" src="{{ request.app.url_path_for('static', path='/characters/'+name+'.png') }}"> {{ name }}</h2>
         </div>
         <div class="col-lg-3"><h3>{{ char.wins }} <small class="text-muted">wins</small></h3></div>
         <div class="col-lg-3"><h3>{{ char.OvO_MMR }} <small class="text-muted">1's mmr</small></h3></div>
@@ -39,7 +39,7 @@
 {% else %}
 <div class="row">
     <div class="col-lg-3">
-        <h3><img height="40px" src="{{ url_for('static', path='/characters/'+name+'.png') }}"> {{ name }}</h2>
+        <h3><img height="40px" src="{{ request.app.url_path_for('static', path='/characters/'+name+'.png') }}"> {{ name }}</h2>
     </div>
     <div class="col-lg-3"><h3>{{ char.wins }} <small class="text-muted">wins</small></h3></div>
     <div class="col-lg-3"><h3>{{ char.OvO_MMR }} <small class="text-muted">1's mmr</small></h3></div>
@@ -57,7 +57,7 @@
 
 <hr class="mb-5">
 
-<h2 class="display-6">1v1 <img width="45px" src="{{ url_for('static', path='fight1.png') }}"></img></h2>
+<h2 class="display-6">1v1 <img width="45px" src="{{ request.app.url_path_for('static', path='/fight1.png') }}"></img></h2>
 <hr>
 <div class="row">
     <div class="col-lg-3"><h3>{{ OneVsOne_infos.char }}</h2></div>
@@ -68,7 +68,7 @@
 
 <hr class="mb-5">
 
-<h2 class="display-6">2v2 <img width="45px" src="{{ url_for('static', path='fight.png') }}"></img></h2>
+<h2 class="display-6">2v2 <img width="45px" src="{{ request.app.url_path_for('static', path='fight.png') }}"></img></h2>
 <hr>
 <div class="row" style="margin-bottom: 100px;">
     <div class="col-lg-3"><h3>{{ TwoVsTwo_infos.char }}</h2></div>

@@ -143,14 +143,14 @@
 </head>
 <body class="h-100" style=
         {% if title == "Home" %}
-        "background-image: url('{{ url_for('static', path='/background.jpg') }}');"
+        "background-image: url('{{ request.app.url_path_for('static', path='/background.jpg') }}');"
         {% else %}
         "background-color: #f9e8e8"
         {% endif %}
     >
     <nav class="navbar navbar-light bg-light mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><b>MuLIVErsus</b> <img width="35px" src="{{ url_for('static', path='steven.jpg') }}"></img></a>
+            <a class="navbar-brand" href="/"><b>MuLIVErsus</b> <img width="35px" src="{{ request.app.url_path_for('static', path='steven.jpg') }}"></img></a>
         </div>
     </nav>
 
@@ -164,7 +164,7 @@
         <span class="text-muted fw-bold mx-3">
             <a class="text-decoration-none" href="https://github.com/PLsergent/MuLIVErsus">
                 @plsergent
-                <img width="20px" src="{{ url_for('static', path='/github.png') }}">
+                <img width="20px" src="{{ request.app.url_path_for('static', path='/github.png') }}">
             </a>
         </span>
     </footer>
