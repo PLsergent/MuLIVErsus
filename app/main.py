@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import yaml
-from app.mulpyversus.utils import GamemodeMatches, GamemodeRank, GamemodeRating, Characters, RatingKeys, get_character_from_slug
+from app.mulpyversus.utils import GamemodeMatches, GamemodeRank, GamemodeRating, RatingKeys, get_character_from_slug
 from app.mulpyversus.mulpyversus import MulpyVersus
 
 with open("./app/.config.yml", 'r') as stream:
