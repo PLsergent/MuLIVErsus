@@ -432,7 +432,7 @@ class User:
         char_wins_sorted = dict(sorted(char_wins.items(), key=lambda item: item[1], reverse=True)[:3])
         return char_wins_sorted
     
-    def get_top_character_wins(self):
+    def get_top_character_wins(self, number : int = 10):
         """Return the top three characters in the top three wins
         ::
         Usage Example:
@@ -441,7 +441,7 @@ class User:
         if "stat_trackers" not in self.profileData['server_data']:
             return {}
         char_wins = self.profileData['server_data']['stat_trackers']['character_wins']
-        char_wins_sorted = dict(sorted(char_wins.items(), key=lambda item: item[1], reverse=True)[:10])
+        char_wins_sorted = dict(sorted(char_wins.items(), key=lambda item: item[1], reverse=True)[:number])
         return char_wins_sorted
 
     def get_ally_perk_sharing(self, character : Characters):

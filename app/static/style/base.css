@@ -1,0 +1,43 @@
+body {
+    font-family: 'Open Sans', sans-serif !important;
+    background-color: #f9e8e8;
+}
+
+a.h1 {
+    color: #d4248b;
+    text-decoration: none;
+}
+
+a.h1:hover {
+    color: black;
+    font-weight: bold;
+}
+
+.breadcrumb {
+    background-color: #fcebff!important;
+    border-radius: 5px!important;
+    margin-bottom: 8px!important;
+    padding: 8px 15px!important;
+}
+
+.breadcrumb-item > a {
+    color: #1a1a1a;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: #d4248b!important;
+    font-weight: bold!important;
+}
+
+.breadcrumb-item > .active:hover {
+    color: #31282d;
+    font-weight: bold;
+}
+
+.live-card:hover {
+    box-shadow: 0 0 10px #a063ab;
+    cursor: pointer;
+    transition: 0.3s;
+}
