@@ -15,6 +15,12 @@ body {
 	background-image: url(../images/background2.jpeg);
 }
 
+@media(max-width: 900px){
+	body {
+		padding: 1em;
+	}
+}
+
 h1 {
 	font-size: 3em;
 	color: #131125;
@@ -59,7 +65,7 @@ ul {
 @media(max-width: 900px){
 	.login-box {
 		display: flex;
-		width: 87em;
+		width: 100vw;
 		height: 100vh;
 		min-height: 60em;
 		border-radius: 20px;
@@ -86,7 +92,7 @@ ul {
 
 @media(max-width: 900px){
 	.login-box-formbox {
-		padding: 1.5em 2em;
+		padding: 0.5em 1em;
 	}
 }
 

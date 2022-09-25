@@ -77,7 +77,7 @@ class Match:
     """
     def __init__(self, id : string, mlpyvrs):
         self.mlpyvrs = mlpyvrs
-        self.rawData = json.loads(mlpyvrs.request_data("matches/" + id).content)        
+        self.rawData = json.loads(mlpyvrs.request_data("matches/" + id).content)
     
     def __repr__(self):
         return str(self.rawData)

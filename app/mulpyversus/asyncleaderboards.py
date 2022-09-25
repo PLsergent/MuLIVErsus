@@ -5,7 +5,7 @@ from app.mulpyversus.mulpyversus import *
 from app.mulpyversus.user import *
 from app.mulpyversus.utils import *
 
-class AsyncUserLeaderboard:
+class AsyncUserLeaderboardForGamemode:
     """Represent a UserLeaderboard object
     ::
         ::
@@ -13,13 +13,13 @@ class AsyncUserLeaderboard:
             a
     Attributes:
     """
-    def __init__(self, id : string, mlpyvrs):
+    def __init__(self, mlpyvrs, id : string, gamemode : GamemodeRank):
         self.id = id
         self.mlpyvrs = mlpyvrs
-    
+        self.gamemode = gamemode
+        
     async def init(self):
-        self.oneData = await self.mlpyvrs.request_data("/leaderboards/1v1/score-and-rank/" + str(self.id))
-        self.twoData = await self.mlpyvrs.request_data("/leaderboards/2v2/score-and-rank/" + str(self.id))
+        self.data = await self.mlpyvrs.request_data(f"/leaderboards/{self.gamemode.value}/score-and-rank/" + str(self.id))
 
     async def refresh(self):
         """Used to refresh a AsyncUserLeaderboard object 
@@ -30,20 +30,14 @@ class AsyncUserLeaderboard:
         await self.init(self.get_account_id(), self)
 
     def get_account_id(self) -> string:
-        return self.oneData['member']
+        return self.data['member']
 
-    def get_score_in_gamemode(self, gamemode : GamemodeRank):
-        if gamemode.value == '1v1':
-            return self.oneData['score'] if 'score' in self.oneData else None
-        elif gamemode.value == '2v2': 
-            return self.twoData['score'] if 'score' in self.oneData else None
+    def get_score_in_gamemode(self):
+        return self.data['score'] if 'score' in self.data else None
 
-    def get_rank_in_gamemode(self, gamemode : GamemodeRank):
-        if gamemode.value == '1v1':
-            return self.oneData['rank'] if 'rank' in self.oneData else None
-        elif gamemode.value == '2v2': 
-            return self.twoData['rank'] if 'rank' in self.oneData else None
-    
+    def get_rank_in_gamemode(self):
+        return self.data['rank'] if 'rank' in self.data else None    
+
 
 class AsyncGlobalLeaderboard:
     """Represent a GlobalLeaderboard object

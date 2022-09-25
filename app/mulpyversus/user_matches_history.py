@@ -21,7 +21,7 @@ class UserMatchHistory:
         page = 1
         total_pages = 1
         while page <= total_pages:
-            result = json.loads(mlpyvrs.request_data(f"matches/all/{user.get_account_id()}?page={page}").content)
+            result = json.loads(mlpyvrs.request_data(f"matches/all/{user.get_account_id()}?count=1&page={page}").content)
             total_pages = result["total_pages"] if all_pages else 1
             self.rawData.extend(result["matches"])
             page += 1

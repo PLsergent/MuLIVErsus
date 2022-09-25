@@ -179,12 +179,12 @@ class AsyncMulpyVersus:
         leaderbord.init()
         return leaderbord
 
-    async def get_user_leaderboard_in_gamemode(self, gamemode : GamemodeRank, id):
+    async def get_user_leaderboard(self, id, gamemode : GamemodeRank):
         """IS ASYNC
         ::
         Returns a UserLeaderboard object
         ::
         """
-        leaderbord = AsyncUserLeaderboard(self, gamemode, id)
-        leaderbord.init()
+        leaderbord = AsyncUserLeaderboardForGamemode(self, id, gamemode)
+        await leaderbord.init()
         return leaderbord

@@ -446,6 +446,21 @@ class AsyncUser:
         """
         return self.profileData['matches'][gm.value]["win"] if gm.value in self.profileData['matches'] else 0
 
+    def get_global_win_percentage(self, gm : GamemodeMatches=None):
+        """Return global win percentage
+        ::
+        Usage Example:
+            >>> .get_global_win_percentage()
+        """
+        if gm is None:
+            total_matches = self.get_match_won_count(GamemodeMatches.OneVsOne) + self.get_match_lost_count(GamemodeMatches.OneVsOne) + \
+                            self.get_match_won_count(GamemodeMatches.TwoVsTwo) + self.get_match_lost_count(GamemodeMatches.TwoVsTwo)
+            wins = self.get_match_won_count(GamemodeMatches.OneVsOne) + self.get_match_won_count(GamemodeMatches.TwoVsTwo)
+        else:
+            total_matches = self.get_match_won_count(gm) + self.get_match_lost_count(gm)
+            wins = self.get_match_won_count(gm)
+        return (wins*100)/total_matches if total_matches > 0 else 0 
+
     def get_win_streak_count(self, gm : GamemodeMatches):
         """Return current winstreak in specified GamemodeMatches
         ::

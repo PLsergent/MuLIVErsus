@@ -4,7 +4,7 @@ from app.mulpyversus.mulpyversus import *
 from app.mulpyversus.user import *
 from app.mulpyversus.utils import *
 
-class UserLeaderboard:
+class UserLeaderboardForGamemode:
     """Represent a UserLeaderboard object
     ::
         ::
@@ -12,9 +12,9 @@ class UserLeaderboard:
             a
     Attributes:
     """
-    def __init__(self, mlpyvrs, id : string ):
-        self.oneData = json.loads(mlpyvrs.request_data("leaderboards/1v1/score-and-rank/" + str(id)).content)  
-        self.twoData = json.loads(mlpyvrs.request_data("leaderboards/2v2/score-and-rank/" + str(id)).content)
+    def __init__(self, mlpyvrs, id : string, gamemode : GamemodeRank):
+        self.gamemode = gamemode
+        self.data = json.loads(mlpyvrs.request_data(f"leaderboards/{gamemode.value}/score-and-rank/" + str(id)).content)  
 
     def refresh(self):
         """Used to UserLeaderboard a User object 
@@ -25,19 +25,13 @@ class UserLeaderboard:
         self.__init__(self.get_account_id(), self)
 
     def get_account_id(self) -> string:
-        return self.oneData['member']
+        return self.data['member']
 
-    def get_score_in_gamemode(self, gamemode : GamemodeRank):
-        if gamemode.value == '1v1':
-            return self.oneData['score'] if 'score' in self.oneData else None
-        elif gamemode.value == '2v2': 
-            return self.twoData['score'] if 'score' in self.oneData else None
+    def get_score_in_gamemode(self):
+        return self.data['score'] if 'score' in self.data else None
 
-    def get_rank_in_gamemode(self, gamemode : GamemodeRank):
-        if gamemode.value == '1v1':
-            return self.oneData['rank'] if 'rank' in self.oneData else None
-        elif gamemode.value == '2v2': 
-            return self.twoData['rank'] if 'rank' in self.oneData else None
+    def get_rank_in_gamemode(self):
+        return self.data['rank'] if 'rank' in self.data else None
     
 
 class GlobalLeaderboard:

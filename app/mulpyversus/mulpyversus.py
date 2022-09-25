@@ -5,6 +5,7 @@ import requests
 import json
 from app.mulpyversus.matches import Match
 from app.mulpyversus.user import User
+from app.mulpyversus.asyncuser import AsyncUser
 from app.mulpyversus.user_matches_history import UserMatchHistory
 from app.mulpyversus.leaderboards import *
 from app.mulpyversus.utils import *
@@ -189,8 +190,8 @@ class MulpyVersus:
         """
         return GlobalLeaderboard(self, gamemode, countLimit)
 
-    def get_user_leaderboard(self, id):
+    def get_user_leaderboard(self, id, gamemode : GamemodeRank):
         """Returns a UserLeaderboard object
         ::
         """
-        return UserLeaderboard(self, id)
+        return UserLeaderboardForGamemode(self, id, gamemode)
