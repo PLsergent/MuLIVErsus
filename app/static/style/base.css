@@ -21,6 +21,11 @@ main.main {
         padding: 30px 10px 10px 30px;
         margin: 5px 1% 80px 1%;
     }
+
+    .card {
+        margin: 0px !important;
+        margin-bottom: 10px !important;
+    }
 }
 
 a {
