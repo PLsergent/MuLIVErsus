@@ -1,3 +1,10 @@
+h1 {
+    font-size: 3em;
+    color: #370046;
+    font-weight: 700;
+    margin: 0;
+}
+
 .live-card:hover {
     box-shadow: 0 0 10px #a063ab;
     cursor: pointer;
