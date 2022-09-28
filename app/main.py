@@ -72,13 +72,17 @@ async def get_user_info_for_gamemode(
     char = get_character_from_slug(character_slug)
     info["ranked_win"] = user.get_wins_with_character(char)
     info["char"] = char.value["name"]
-    info["rating"] = round(
-        user.get_character_rating(char, RatingKeys.Mean, gmrating), 0
-    )
+    info["rating"] = int(user.get_character_rating(char, RatingKeys.Mean, gmrating))
     info["rank"] = -1
-    rank = mlpyvrs.get_user_leaderboard(
-        user.get_account_id(), gmrank
-    ).get_rank_in_gamemode()
+    rank = (
+        mlpyvrs.get_user_leaderboard(
+            user.get_account_id(), gmrank, character_slug=character_slug
+        ).get_rank_in_gamemode()
+        if match is not None
+        else mlpyvrs.get_user_leaderboard(
+            user.get_account_id(), gmrank
+        ).get_rank_in_gamemode()
+    )
     if rank is not None:
         info["rank"] = "{:,}".format(rank)
 
@@ -92,6 +96,41 @@ async def get_user_info_for_gamemode(
         )
         info["score"] = match.get_player_data_by_id(info["id"]).get_score()
     return info
+
+
+async def get_char_infos(character_slug: str, user, wins):
+    character = get_character_from_slug(character_slug)
+    rankOvO = mlpyvrs.get_user_leaderboard(
+        user.get_account_id(),
+        GamemodeRank.OneVsOne,
+        character_slug=character_slug,
+    ).get_rank_in_gamemode()
+    rankTvT = mlpyvrs.get_user_leaderboard(
+        user.get_account_id(),
+        GamemodeRank.TwoVsTwo,
+        character_slug=character_slug,
+    ).get_rank_in_gamemode()
+    if rankOvO is not None:
+        rankOvO = "{:,}".format(rankOvO)
+    if rankTvT is not None:
+        rankTvT = "{:,}".format(rankTvT)
+
+    return {
+        "name": character.value["name"],
+        "wins": wins,
+        "OvO_MMR": int(
+            user.get_character_rating(
+                character, RatingKeys.Mean, GamemodeRating.OneVsOne
+            )
+        ),
+        "TvT_MMR": int(
+            user.get_character_rating(
+                character, RatingKeys.Mean, GamemodeRating.TwoVsTwo
+            )
+        ),
+        "OvO_rank": rankOvO,
+        "TvT_rank": rankTvT,
+    }
 
 
 @app.get("/{id}")
@@ -124,26 +163,15 @@ async def profile(request: Request, id: str):
 
         # Top characters
         top_characters_slug = user.get_top_character_wins()
-        top_characters = {}
-        for character_slug, wins in top_characters_slug.items():
-            character = get_character_from_slug(character_slug)
-            top_characters[character.value["name"]] = {
-                "wins": wins,
-                "OvO_MMR": round(
-                    user.get_character_rating(
-                        character, RatingKeys.Mean, GamemodeRating.OneVsOne
-                    ),
-                    0,
-                ),
-                "TvT_MMR": round(
-                    user.get_character_rating(
-                        character, RatingKeys.Mean, GamemodeRating.TwoVsTwo
-                    ),
-                    0,
-                ),
-            }
 
-        results = await asyncio.gather(
+        top_characters = await asyncio.gather(
+            *[
+                get_char_infos(character_slug, user, wins)
+                for character_slug, wins in top_characters_slug.items()
+            ]
+        )
+
+        gamemode_results = await asyncio.gather(
             *[
                 get_user_info_for_gamemode(
                     mlpyvrs,
@@ -162,8 +190,8 @@ async def profile(request: Request, id: str):
             ]
         )
 
-        OneVsOne_infos = results[0]
-        TwoVsTwo_infos = results[1]
+        OneVsOne_infos = gamemode_results[0]
+        TwoVsTwo_infos = gamemode_results[1]
 
         username = OneVsOne_infos["username"]
     except:

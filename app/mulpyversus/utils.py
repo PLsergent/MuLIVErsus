@@ -21,6 +21,7 @@ class Characters(enum.Enum):
     LebronJames = {"name": "Lebron James", "slug": "character_c16"}
     Morty = {"name": "Morty", "slug": "character_c019"}
     Gizmo = {"name": "Gizmo", "slug": "character_C023A"}
+    Rick = {"name": "Rick", "slug": "character_C020"}
 
 
 def get_character_from_slug(slug):

@@ -11,11 +11,11 @@ body {
 	align-items: center;
 	min-height: 100vh;
 	margin: 0;
-	padding: 2.5em;
+	padding: 1em;
 	background-image: url(../images/background2.jpeg);
 }
 
-@media(max-width: 900px){
+@media(max-width: 900px) {
 	body {
 		padding: 1em;
 	}
@@ -54,15 +54,15 @@ ul {
 .login-box {
 	display: flex;
 	width: 75vw;
-	height: 80vh;
-	min-height: 60em;
+	height: 90vh;
+	min-height: 50em;
 	border-radius: 20px;
 	background-color: #fff;
 	overflow: hidden;
 	box-shadow: 0 10px 30px #ebeef787;
 }
 
-@media(max-width: 900px){
+@media(max-width: 900px) {
 	.login-box {
 		display: flex;
 		width: 100vw;
@@ -81,16 +81,21 @@ ul {
 	flex-direction: column;
 	justify-content: center;
 	flex: 1 1 100%;
-	padding: 4em 7em;
+	padding: 4em 6em;
 }
 
-@media(max-width: 900px){
+
+.login-box-quotebox {
+	padding-top: 8em;
+}
+
+@media(max-width: 900px) {
 	.login-box-quotebox {
 		display: none;
 	}
 }
 
-@media(max-width: 900px){
+@media(max-width: 900px) {
 	.login-box-formbox {
 		padding: 0.5em 1em;
 	}
@@ -132,7 +137,7 @@ form>div input {
 	font-weight: 700;
 }
 
-form>div input.input-username{
+form>div input.input-username {
 	background-repeat: no-repeat;
 	background-position: right 1em top 1.25em;
 	height: 40px;

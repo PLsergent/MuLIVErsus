@@ -190,8 +190,8 @@ class MulpyVersus:
         """
         return GlobalLeaderboard(self, gamemode, countLimit)
 
-    def get_user_leaderboard(self, id, gamemode : GamemodeRank):
+    def get_user_leaderboard(self, id, gamemode : GamemodeRank, character_slug : string = None):
         """Returns a UserLeaderboard object
         ::
         """
-        return UserLeaderboardForGamemode(self, id, gamemode)
+        return UserLeaderboardForGamemode(self, id, gamemode, character_slug=character_slug)

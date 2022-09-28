@@ -1,11 +1,12 @@
 {% block content %}
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" href="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}" type="image/x-icon">
 
 <link href="{{ request.app.url_path_for('static', path='/style/index.css') }}" rel="stylesheet">
 
 <div class="login-box">
     <div class="login-box-formbox">
-        <span><img width="70px" style="border-radius: 30px;margin-top: 30px;"
+        <span><img width="70px" style="border-radius: 40px;margin-top: 30px;"
             src="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}" /> &nbsp
         <img width="200px"
             src="{{ request.app.url_path_for('static', path='/images/multiversus.png') }}" /></span>

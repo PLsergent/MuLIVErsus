@@ -142,7 +142,7 @@ class User:
     Attributes:
     """
     def __init__(self, id : string, mlpyvrs):
-        self.profileData = json.loads(mlpyvrs.request_data("profiles/" + str(id)).content)  
+        self.profileData = json.loads(mlpyvrs.request_data("profiles/" + str(id)).content) 
         self.accountData = json.loads(mlpyvrs.request_data("accounts/" + str(id)).content)
 
     def __repr__(self):

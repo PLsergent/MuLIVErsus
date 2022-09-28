@@ -1,0 +1,107 @@
+a {
+    text-decoration: none;
+}
+
+h2 {
+    font-size: 2.5em;
+    color: #370046;
+    font-weight: 700;
+    margin: 0;
+}
+
+@media(max-width: 1000px) {
+    h2 {
+        font-size: 2em;
+        color: #370046;
+        font-weight: 700;
+        margin: 0;
+    }
+}
+
+h3 {
+    color: #7e109c !important;
+    font-weight: 700;
+    text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0,0,0,0.15);
+}
+
+h4 {
+    color: #370046;
+    font-weight: 600;
+    margin: 0;
+}
+
+h4>small {
+    color: #370046;
+    font-weight: 400;
+    margin: 0;
+}
+
+.profile-card {
+    border-radius: 0.5rem;
+    border-left: 10px solid #9d27d3f8;
+    background: linear-gradient(to left, #fff 50%, #9d27d3f8 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: all 1s ease
+}
+
+.profile-card:hover {
+    background-color: #9d27d3f8;
+    background-position: left bottom;
+    cursor: pointer;
+    border-left: 20px solid #ea8aff;
+    box-shadow: 0 10px 20px #fff;
+}
+
+.profile-card h2>span {
+    color: #fff;
+    transition: all 1s ease;
+}
+
+.profile-card:hover h2>span {
+    color: #FA3B7C;
+    transition: all 1s ease;
+}
+
+.profile-card:hover h4 {
+    color: #fff !important;
+    transition: all 1s ease;
+}
+
+.profile-card:hover h2 {
+    color: #fff !important;
+    transition: all 1s ease;
+}
+
+.profile-card:hover h4>small {
+    color: #FA3B7C !important;
+    transition: all 1s ease;
+}
+
+.btn-more {
+    background-color: #A532D6;
+    border-color: #A532D6;
+    color: #fff;
+    font-weight: 600;
+    transition: all 500ms ease;
+}
+
+.btn-more:hover {
+    background-color: #ea8aff;
+    border-color: #ea8aff;
+    color: #000000;
+    font-weight: bold;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+hr {
+    height: 3px !important;
+    background-color: #FA3B7C;
+}
+
+@media (min-width: 992px) {
+    .col-lg-05 {
+        flex: 0 0 auto;
+        width: 129px;
+    }
+}

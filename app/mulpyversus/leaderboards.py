@@ -12,9 +12,12 @@ class UserLeaderboardForGamemode:
             a
     Attributes:
     """
-    def __init__(self, mlpyvrs, id : string, gamemode : GamemodeRank):
+    def __init__(self, mlpyvrs, id : string, gamemode : GamemodeRank, character_slug : string = None):
         self.gamemode = gamemode
-        self.data = json.loads(mlpyvrs.request_data(f"leaderboards/{gamemode.value}/score-and-rank/" + str(id)).content)  
+        if character_slug is None:
+            self.data = json.loads(mlpyvrs.request_data(f"leaderboards/{gamemode.value}/score-and-rank/" + str(id)).content)
+        else :
+            self.data = json.loads(mlpyvrs.request_data(f"leaderboards/{character_slug}_{gamemode.value}/score-and-rank/" + str(id)).content)
 
     def refresh(self):
         """Used to UserLeaderboard a User object 

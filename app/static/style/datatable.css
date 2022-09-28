@@ -1,0 +1,13 @@
+.pagination>li>a,
+.pagination>li>span {
+    color: #370046;
+    font-weight: 600;
+    background-color: #fff
+}
+
+.pagination>li.active>a,
+.pagination>li.active>span {
+    border-color: #fff !important;
+    font-weight: 600 !important;
+    background-color: #A532D6 !important;
+}

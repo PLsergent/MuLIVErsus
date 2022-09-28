@@ -1,0 +1,66 @@
+.live-card:hover {
+    box-shadow: 0 0 10px #a063ab;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.live-card {
+    border-radius: 1rem;
+    border-left: 10px solid #4b0d75;
+}
+
+.loss-card {
+    border: 5px solid #e74b4b;
+}
+
+.win-card {
+    border: 5px solid #57a457;
+}
+
+.live-card-title {
+    border-radius: 0.5rem;
+    border-left: 10px solid #FA3B7C
+}
+
+.live-card,
+.loss-card,
+.win-card {
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .05);
+    transition: .3s transform cubic-bezier(.155, 1.105, .295, 1.12), .3s box-shadow, .3s -webkit-transform cubic-bezier(.155, 1.105, .295, 1.12);
+    padding: 5px;
+    cursor: pointer;
+}
+
+.live-card:hover,
+.loss-card:hover,
+.win-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+}
+
+@media(max-width: 990px) {
+    .card {
+        margin: 20px;
+    }
+}
+
+a.h1 {
+    color: #370046;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+a.h1:hover {
+    color: #9D27D3;
+    font-weight: bold;
+    text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0,0,0,0.15);
+    transition: all 0.5s ease;
+}
+
+small {
+    font-weight: 400;
+    margin: 0;
+    font-size: 0.75em;
+}

@@ -190,12 +190,10 @@ class Match:
     def get_rating_update(self, id):
         """Returns the rating update in the last match from user id"""
         if self.rawData and "data" in self.rawData:
-            for data in self.rawData["data"]["ratingUpdates"]["playerRatingChanges"]:
-                if data["playerAccountID"] == id:
-                    preMatchRating = data["preMatchRating"]["mean"] if "preMatchRating" in data else 0
-                    postMatchRating = data["postMatchRating"]["mean"] if "postMatchRating" in data else 0
-                    return round(postMatchRating - preMatchRating, 0)
-        else:
-            return None
-
-  
+            if self.rawData["data"] and "ratingUpdates" in self.rawData["data"]:
+                for data in self.rawData["data"]["ratingUpdates"]["playerRatingChanges"]:
+                    if data["playerAccountID"] == id:
+                        preMatchRating = data["preMatchRating"]["mean"] if "preMatchRating" in data else 0
+                        postMatchRating = data["postMatchRating"]["mean"] if "postMatchRating" in data else 0
+                        return round(postMatchRating - preMatchRating, 0)
+        return None
