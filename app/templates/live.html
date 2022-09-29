@@ -6,7 +6,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a href="/{{ username }}">{{ username | title }}</a></li>
+        <li class="breadcrumb-item"><a onclick="loading()" href="/{{ username }}">{{ username | title }}</a></li>
         <li class="breadcrumb-item active">{{ title }}</li>
     </ol>
 </nav>
@@ -42,11 +42,11 @@
     {% for player in players %}
         <div class="col-lg-6 mb-3">
             {% if player.rating_updates > 0 %}
-            <div href="/{{ player.id }}" class="card live-card win-card">
+            <div onclick="loading()" href="/{{ player.id }}" class="card live-card win-card">
             {% elif player.rating_updates < 0 %}
-            <div href="/{{ player.id }}" class="card live-card loss-card">
+            <div onclick="loading()" href="/{{ player.id }}" class="card live-card loss-card">
             {% else %}
-            <div href="/{{ player.id }}" class="card live-card">
+            <div onclick="loading()" href="/{{ player.id }}" class="card live-card">
             {% endif %}
                 <div class="card-body">
                     <a href="/{{ player.id }}" class="h1 card-title stretched-link">{{ player.username }}</a>

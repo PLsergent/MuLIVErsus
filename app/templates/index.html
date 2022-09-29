@@ -4,7 +4,7 @@
 
 <link href="{{ request.app.url_path_for('static', path='/style/index.css') }}" rel="stylesheet">
 
-<div class="login-box">
+<div id="main" class="login-box">
     <div class="login-box-formbox">
         <span><img width="70px" style="border-radius: 40px;margin-top: 30px;"
             src="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}" /> &nbsp
@@ -17,10 +17,10 @@
             <form method="post">
                 <div>
                     <label for="username"> In game username</label>
-                    <input for="username" class="input-username" type="text" name="username" spellcheck="false"/>
+                    <input for="username" class="input-username" type="text" name="username" spellcheck="false" required/>
                 </div>
                 <div>
-                    <input type="submit" value="GET YOUR STATS" class="btn" />
+                    <input onclick="loading()" type="submit" value="GET YOUR STATS" class="btn" />
                 </div>
             </form>
             <div class="alternate-text">About</div>
@@ -46,5 +46,13 @@
         </div>
     </div>
 </div>
+<div id="loader" class="loader"></div>
+
+<script>
+    function loading(){
+        document.getElementById("loader").style.display="block";
+        document.getElementById("main").style.display="none";
+    }
+</script>
 
 {% endblock %}

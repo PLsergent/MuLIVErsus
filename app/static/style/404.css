@@ -53,14 +53,11 @@
     
   }
   
-  .main{
+  .mainerror{
     min-height: 600px;
     margin: 0px auto;
     width: auto;
     max-width: 800px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   
   .path {

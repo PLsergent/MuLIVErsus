@@ -32,9 +32,10 @@
     </nav>
 
     <main class="flex main">
-        <div class="container">
+        <div id="main" class="container">
             {% block content %}{% endblock %}
         </div>
+        <div id="loader" class="loader container my-5"></div>
     </main>
 
     <footer class="footer mt-auto py-3 bg-light fixed-bottom">
@@ -47,3 +48,10 @@
     </footer>
 </body>
 </html>
+
+<script>
+    function loading(){
+        document.getElementById("loader").style.display="block";
+        document.getElementById("main").style.display="none";
+    }
+</script>
