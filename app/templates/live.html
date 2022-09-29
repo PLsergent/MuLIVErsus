@@ -63,9 +63,9 @@
                         {% elif player.rating_updates < 0 %}
                             <div class="col-lg-5"><h3>{{ player.rating }} <small class="text-danger">{{ player.rating_updates }}</small><small class="text-muted"> mmr</small></h3></div>
                         {% else %}
-                            <div class="col-lg-5"><h3>{{ player.rating }}<small class="text-muted">mmr</small></h3></div>
+                            <div class="col-lg-5"><h3>{{ player.rating }}<small class="text-muted"> mmr</small></h3></div>
                         {% endif %}
-                        <div class="col-lg-7"><h3><small class="text-muted">Char rank:</small> {{ player.rank }}<small class="text-muted"> #</small></h3></div>
+                        <div class="col-lg-7"><h3><small class="text-muted">{% if title.startswith('Finished') %}Char rank:{% else %}Global rank:{% endif %}</small> {{ player.rank }}<small class="text-muted"> #</small></h3></div>
                     </div>
                 </div>
             </div>
