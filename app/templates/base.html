@@ -19,13 +19,7 @@
     <title>MuLIVErsus</title>
 </head>
 
-<body style="background-color: #f9e8e8"
-        {% if title == "Home" %}
-        "background-image: url('{{ request.app.url_path_for('static', path='/images/background2.jpeg') }}');"
-        {% else %}
-        "background-color: #f9e8e8"
-        {% endif %}
-    >
+<body style="background-color: #BB2C76">
     <nav class="navbar flex navbar-light bg-light mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="/"><b>MuLIVErsus</b> <img width="35px" src="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}"></img></a>

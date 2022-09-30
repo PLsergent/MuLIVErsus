@@ -43,6 +43,11 @@ h2 {
     margin: 0;
 }
 
+.bg-purple {
+    background-color: #7823a0;
+    cursor: pointer;
+}
+
 @media(max-width: 1000px) {
     h2 {
         font-size: 2em;

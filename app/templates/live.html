@@ -7,7 +7,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item"><a onclick="loading()" href="/{{ username }}">{{ username | title }}</a></li>
-        <li class="breadcrumb-item active">{{ title }}</li>
+        <li class="breadcrumb-item active">{{ title }} &nbsp; <span class="text-success">Auto refresh: <span id="timer"></span></span><span onclick="location.reload()" class="badge bg-purple">Refresh now</span></li>
     </ol>
 </nav>
 
@@ -72,5 +72,44 @@
         </div>
     {% endfor %}
 </div>
+
+{% block javascript %}
+<script>
+    function timer(seconds) {
+        var expire_time = new Date().getTime() + seconds * 1000;
+        
+        var x = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = expire_time - now;
+
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            
+            // Output the result in an element with id="demo"
+            document.getElementById("timer").innerHTML = minutes + "m " + seconds + "s ";
+            
+            // If the count down is over, write some text 
+            if (distance <= 1000) {
+                clearInterval(x);
+                refresh();
+            }
+        }, 1000);
+    }
+    async function refresh() {
+        fetch('/{{ username }}/live').then(function (response) {
+            // The API call was successful!
+            return response.text();
+        }).then(function (html) {
+            // This is the HTML from our response as a text string
+            document.querySelector('html').innerHTML = html
+            timer(81);
+        }).catch(function (err) {
+            // There was an error
+            console.warn('Something went wrong.', err);
+        });
+    }
+    timer(81);
+</script>
+{% endblock %}
 
 {% endblock %}
