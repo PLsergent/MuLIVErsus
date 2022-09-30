@@ -70,6 +70,15 @@ class AsyncUsernameSearchResult():
             user = AsyncUser(self.rawData["results"][self.get_amount_of_user_in_current_page()-1]["result"]["account_id"], self.mlpyvrs)
             await user.init()
             return user
+    
+    async def get_most_relevant_user(self) -> User:
+        """Returns the most relevant user in the current page (last login)"""
+        most_recent_login = datetime.fromisoformat("1970-01-01T00:00:00+00:00")
+        for result in self.rawData["results"]:
+            if datetime.fromisoformat(result["result"]["last_login"]) > most_recent_login:
+                most_recent_login = datetime.fromisoformat(result["result"]["last_login"])
+                most_relevant_user_id = result["result"]["account_id"]
+        return await AsyncUser(most_relevant_user_id, self.mlpyvrs).init()
         
     def get_ammount_of_page(self):
         return self.page_ammount

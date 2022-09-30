@@ -74,8 +74,8 @@ class UsernameSearchResult():
         for result in self.rawData["results"]:
             if datetime.fromisoformat(result["result"]["last_login"]) > most_recent_login:
                 most_recent_login = datetime.fromisoformat(result["result"]["last_login"])
-                most_relevant_user = User(result["result"]["account_id"], self.mlpyvrs)
-        return most_relevant_user
+                most_relevant_user_id = result["result"]["account_id"]
+        return User(most_relevant_user_id, self.mlpyvrs)
         
 
     def get_ammount_of_page(self):
@@ -156,7 +156,7 @@ class MulpyVersus:
         """
         return UsernameSearchResult(self, username, limit, canReturnNone)
 
-    def get_user_by_username(self, username:string, limit : int = 15, canReturnNone : bool = True) -> User:
+    def get_user_by_username(self, username:string, limit : int = 5, canReturnNone : bool = True) -> User:
         """Returns a User object for that username
         ::
         If many results are found, returns the first one

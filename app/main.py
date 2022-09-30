@@ -162,7 +162,7 @@ async def profile(request: Request, id: str):
         total_win_percentage = round(user.get_global_win_percentage(), 2)
 
         # Top characters
-        top_characters_slug = user.get_top_character_wins()
+        top_characters_slug = user.get_top_character_wins(9)
 
         top_characters = await asyncio.gather(
             *[
@@ -225,9 +225,9 @@ async def profile(request: Request, id: str):
 @app.get("/{id}/live")
 async def live(request: Request, id: str):
     try:
-        user = mlpyvrs.get_user_by_username(id)
-    except:
         user = mlpyvrs.get_user_by_id(id)
+    except:
+        user = mlpyvrs.get_user_by_username(id)
 
     try:
         for network in user.get_user_networks():
@@ -297,5 +297,5 @@ async def live(request: Request, id: str):
 
     return templates.TemplateResponse(
         "live.html",
-        {"request": request, "title": title, "username": username, "players": players},
+        {"request": request, "title": title, "username": username, "user": user, "players": players},
     )
