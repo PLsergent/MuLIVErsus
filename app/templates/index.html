@@ -1,54 +1,58 @@
-{% block content %}
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="google-site-verification" content="Vfs1YZFuEZHDmaMqCX_Aejftyh1apdL2SkCqTuApSmU" />
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="google-site-verification" content="Vfs1YZFuEZHDmaMqCX_Aejftyh1apdL2SkCqTuApSmU" />
+    
+    <link rel="icon" href="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}" type="image/x-icon">
+    
+    <link href="{{ request.app.url_path_for('static', path='/style/index.css') }}" rel="stylesheet">
+</head>
 
-<link rel="icon" href="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}" type="image/x-icon">
-
-<link href="{{ request.app.url_path_for('static', path='/style/index.css') }}" rel="stylesheet">
-
-<div id="main" class="login-box">
-    <div class="login-box-formbox">
-        <span><img width="70px" style="border-radius: 40px;margin-top: 30px;"
-            src="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}" /> &nbsp
-        <img width="200px"
-            src="{{ request.app.url_path_for('static', path='/images/multiversus.png') }}" /></span>
-        
-        <div class="login-box-login">
-            <h1>MuLIVErsus</h1>
-            <h2>Your Multiversus tracker.</h2>
-            <form method="post">
-                <div>
-                    <label for="username"> In game username</label>
-                    <input for="username" class="input-username" type="text" name="username" spellcheck="false" required/>
-                </div>
-                <div>
-                    <input onclick="loading()" type="submit" value="GET YOUR STATS" class="btn" />
-                </div>
-            </form>
-            <div class="alternate-text">About</div>
-            <div class="alternate-boxes">     
-                <div class="alternate-box">
-                    <a href="https://github.com/PLsergent/MuLIVErsus">@plsergent <img width="18px" src="{{ request.app.url_path_for('static', path='/images/github.png') }}"></a>
-                </div>
-                <div class="alternate-box">
-                    <a href="https://github.com/AshladBP/MulpyVersus">@AshladBP <img width="18px" src="{{ request.app.url_path_for('static', path='/images/github.png') }}"></a>
+<body>
+    <div id="main" class="login-box">
+        <div class="login-box-formbox">
+            <span><img width="70px" style="border-radius: 40px;margin-top: 30px;"
+                src="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}" /> &nbsp
+            <img width="200px"
+                src="{{ request.app.url_path_for('static', path='/images/multiversus.png') }}" /></span>
+            
+            <div class="login-box-login">
+                <h1>MuLIVErsus</h1>
+                <h2>Your Multiversus tracker.</h2>
+                <form method="post">
+                    <div>
+                        <label for="username"> In game username</label>
+                        <input for="username" class="input-username" type="text" name="username" spellcheck="false" required/>
+                    </div>
+                    <div>
+                        <input onclick="loading()" type="submit" value="GET YOUR STATS" class="btn" />
+                    </div>
+                </form>
+                <div class="alternate-text">About</div>
+                <div class="alternate-boxes">     
+                    <div class="alternate-box">
+                        <a href="https://github.com/PLsergent/MuLIVErsus">@plsergent <img width="18px" src="{{ request.app.url_path_for('static', path='/images/github.png') }}"></a>
+                    </div>
+                    <div class="alternate-box">
+                        <a href="https://github.com/AshladBP/MulpyVersus">@AshladBP <img width="18px" src="{{ request.app.url_path_for('static', path='/images/github.png') }}"></a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="login-box-quotebox">
-        <div class="quote-container">
-            <div class="quote">Live match tracker.</div>
-            <h2 style="font-weight: 400; margin-top: 50px;">
-            <ul>
-                <li><b>Explore</b> your profile stats.</li>
-                <li><b>Spy</b> your opponents before the game starts.</li>
-                <li><b>Keep track</b> of the MMR gained or lost after each match.</li>
-            </ul>
+        <div class="login-box-quotebox">
+            <div class="quote-container">
+                <div class="quote">Live match tracker.</div>
+                <h2 style="font-weight: 400; margin-top: 50px;">
+                <ul>
+                    <li><b>Explore</b> your profile stats.</li>
+                    <li><b>Spy</b> your opponents before the game starts.</li>
+                    <li><b>Keep track</b> of the MMR gained or lost after each match.</li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
-<div id="loader" class="loader"></div>
+    <div id="loader" class="loader"></div>
+</body>
+
 
 <script>
     function loading(){
@@ -56,5 +60,3 @@
         document.getElementById("main").style.display="none";
     }
 </script>
-
-{% endblock %}
