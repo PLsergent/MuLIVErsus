@@ -136,11 +136,12 @@ async def get_char_infos(character_slug: str, user, wins):
 @app.get("/{id}")
 async def profile(request: Request, id: str):
     try:
-        user = mlpyvrs.get_user_by_username(id)
-    except:
-        user = mlpyvrs.get_user_by_id(id)
+        user_search_results = mlpyvrs.get_user_by_username(id)
+        if user_search_results is not None:
+            user = user_search_results.get_most_relevant_user()
+        else :
+            user = mlpyvrs.get_user_by_id(id)
 
-    try:
         if (
             "code" in user.profileData and user.get_code() == 404
         ) or "stat_trackers" not in user.profileData["server_data"]:
@@ -226,10 +227,19 @@ async def profile(request: Request, id: str):
 async def live(request: Request, id: str):
     try:
         user = mlpyvrs.get_user_by_id(id)
-    except:
-        user = mlpyvrs.get_user_by_username(id)
-
-    try:
+        if "code" in user.profileData and user.get_code() == 404:  
+            user_search_results = mlpyvrs.get_user_by_username(id)
+            if user_search_results is not None:
+                user = user_search_results.get_most_relevant_user()
+            else :
+                return templates.TemplateResponse(
+                    "404.html",
+                    {
+                        "request": request,
+                        "title": "No data found",
+                        "message": "No data found for this user.",
+                    },
+                )
         for network in user.get_user_networks():
             if network.get_network_name() == "wb_network":
                 username = network.get_network_user_username()

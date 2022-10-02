@@ -163,7 +163,7 @@ class MulpyVersus:
         ::
         Usefull if you are confident what the username is
         """
-        return UsernameSearchResult(self, username, limit, canReturnNone).get_most_relevant_user()
+        return UsernameSearchResult(self, username, limit, canReturnNone)
     
     def get_user_match_history(self, user : User) -> UserMatchHistory:
         """Returns a UserMatchHistory object for that user
