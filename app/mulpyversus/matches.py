@@ -13,7 +13,8 @@ class PlayerMatchData:
     Usage Example:
         ::
     """
-    def __init__(self, data : dict, mlpyvrs):
+
+    def __init__(self, data: dict, mlpyvrs):
         self.rawData = data
         self.mlpyvrs = mlpyvrs
 
@@ -21,48 +22,47 @@ class PlayerMatchData:
         return str(self.rawData)
 
     def get_account_id(self) -> string:
-        return self.rawData['AccountId']
+        return self.rawData["AccountId"]
 
     def get_character_slug(self) -> string:
         """A string representing the character played this match by the player
         ::
         You can get a display name of the character using Utils.slug_to_display(theSlugName)
         """
-        return self.rawData['CharacterSlug']
+        return self.rawData["CharacterSlug"]
 
     def get_damage_dealt(self) -> string:
-        return self.rawData['DamageDone']
+        return self.rawData["DamageDone"]
 
     def get_death_amount(self) -> string:
-        return self.rawData['Deaths']
-    
+        return self.rawData["Deaths"]
+
     def get_guild_id(self) -> string:
-        return self.rawData['GuildId']
+        return self.rawData["GuildId"]
 
     def is_guilded_match(self) -> bool:
-        return self.rawData['IsGuildedMatch']
+        return self.rawData["IsGuildedMatch"]
 
     def get_played_plateform(self) -> string:
-        return self.rawData['PlayedPlatform']
+        return self.rawData["PlayedPlatform"]
 
     def get_player_index(self) -> int:
-        return self.rawData['PlayerIndex']
+        return self.rawData["PlayerIndex"]
 
     def get_ringouts_dealt(self) -> int:
-        return self.rawData['Ringouts']
+        return self.rawData["Ringouts"]
 
     def get_score(self) -> int:
-        return self.rawData['Score']
+        return self.rawData["Score"]
 
     def get_team_index(self) -> int:
-        return self.rawData['TeamIndex']
+        return self.rawData["TeamIndex"]
 
     def get_username(self) -> string:
-        return self.rawData['Username']
-    
+        return self.rawData["Username"]
+
     def get_user(self) -> User:
         return User(self.get_account_id(), self.mlpyvrs)
-
 
 
 class Match:
@@ -75,10 +75,11 @@ class Match:
             a
     Attributes:
     """
-    def __init__(self, id : string, mlpyvrs):
+
+    def __init__(self, id: string, mlpyvrs):
         self.mlpyvrs = mlpyvrs
         self.rawData = json.loads(mlpyvrs.request_data("matches/" + id).content)
-    
+
     def __repr__(self):
         return str(self.rawData)
 
@@ -94,7 +95,7 @@ class Match:
         Examples:
             >>> amounfOfPlayer = matches.get_player_ammount_in_match()
         """
-        return len(self.rawData['server_data']['PlayerData'])
+        return len(self.rawData["server_data"]["PlayerData"])
 
     def get_match_id(self) -> string:
         """Gets the id of the match.
@@ -105,30 +106,30 @@ class Match:
         Examples:
             >>> matchId = matches.get_match_id()
         """
-        return self.rawData['id']
-    
+        return self.rawData["id"]
+
     def get_created_at(self) -> string:
-        return self.rawData['created_at']
+        return self.rawData["created_at"]
 
     def get_updated_at(self) -> string:
-        return self.rawData['updated_at']
-    
-    def get_state(self) -> string:
-        return self.rawData['state']
-    
-    def get_completion_time(self) -> string:
-        return self.rawData['completion_time']
+        return self.rawData["updated_at"]
 
-    def get_access_level(self) -> string :
+    def get_state(self) -> string:
+        return self.rawData["state"]
+
+    def get_completion_time(self) -> string:
+        return self.rawData["completion_time"]
+
+    def get_access_level(self) -> string:
         """Gets the access level of the match (private etc..).
         ::
         Returns:
             string: the access level.
         """
-        return self.rawData['access_level']
+        return self.rawData["access_level"]
 
     def get_name(self) -> string:
-        return self.rawData['name']
+        return self.rawData["name"]
 
     def get_winners(self) -> list[User]:
         """Returns a list of winner in this match.
@@ -138,9 +139,9 @@ class Match:
         Returns:
             list[user]: a list of winner.
         """
-        return [User(id, self.mlpyvrs) for id in self.rawData['win']]
+        return [User(id, self.mlpyvrs) for id in self.rawData["win"]]
 
-    def get_losers(self)-> list[User] :
+    def get_losers(self) -> list[User]:
         """Returns a list of loosers in this match.
         ::
         You can access a specific looser with get_losers()[index]
@@ -148,52 +149,67 @@ class Match:
         Returns:
             list[User]: a list of loosers.
         """
-        return [User(id, self.mlpyvrs) for id in self.rawData['loss']]
+        return [User(id, self.mlpyvrs) for id in self.rawData["loss"]]
 
     def is_draw(self):
-        return self.rawData['draw']
-    
+        return self.rawData["draw"]
+
     def is_custom_match(self):
-        return self.rawData['server_data']['IsCustomMatch']
+        return self.rawData["server_data"]["IsCustomMatch"]
 
     def get_map(self):
-        return self.rawData['map']
+        return self.rawData["map"]
 
-    def get_player_data_by_id(self, id : int):
+    def get_player_data_by_id(self, id: int):
         """Gets the player data by id."""
         if self.rawData and "server_data" in self.rawData:
             for data in self.rawData["server_data"]["PlayerData"]:
                 if data["AccountId"] == id:
                     return PlayerMatchData(data, self.mlpyvrs)
-        
-    def get_all_players_data_in_match(self) -> list[PlayerMatchData]:
-        return [PlayerMatchData(data , self.mlpyvrs) for data in self.rawData['server_data']['PlayerData']]
 
-    def get_team_score_by_id(self, id : int) -> int:
-        if self.get_player_ammount_in_match()-1 <= id and id>0:
-            return self.rawData['server_data']['TeamScores'][id]
+    def get_all_players_data_in_match(self) -> list[PlayerMatchData]:
+        return [
+            PlayerMatchData(data, self.mlpyvrs)
+            for data in self.rawData["server_data"]["PlayerData"]
+        ]
+
+    def get_team_score_by_id(self, id: int) -> int:
+        if self.get_player_ammount_in_match() - 1 <= id and id > 0:
+            return self.rawData["server_data"]["TeamScores"][id]
         else:
-            raise ValueError('The id you passed is invalid (too big or too small) - Use get_player_ammount_in_match() to know total ammount of players.')
+            raise ValueError(
+                "The id you passed is invalid (too big or too small) - Use get_player_ammount_in_match() to know total ammount of players."
+            )
 
     def get_winning_team_id(self) -> int:
-        return self.rawData['server_data']['WinningTeamId']
+        return self.rawData["server_data"]["WinningTeamId"]
 
     def get_match_template_name(self) -> string:
-        return self.rawData['template']['name']
-    
-    def get_match_max_player(self)-> int:
-        return self.rawData['template']['max_players']
-    
-    def get_match_min_players(self)-> int:
-        return self.rawData['template']['min_players']
-    
+        return self.rawData["template"]["name"]
+
+    def get_match_max_player(self) -> int:
+        return self.rawData["template"]["max_players"]
+
+    def get_match_min_players(self) -> int:
+        return self.rawData["template"]["min_players"]
+
     def get_rating_update(self, id):
         """Returns the rating update in the last match from user id"""
         if self.rawData and "data" in self.rawData:
             if self.rawData["data"] and "ratingUpdates" in self.rawData["data"]:
-                for data in self.rawData["data"]["ratingUpdates"]["playerRatingChanges"]:
+                for data in self.rawData["data"]["ratingUpdates"][
+                    "playerRatingChanges"
+                ]:
                     if data["playerAccountID"] == id:
-                        preMatchRating = data["preMatchRating"]["mean"] if "preMatchRating" in data else 0
-                        postMatchRating = data["postMatchRating"]["mean"] if "postMatchRating" in data else 0
+                        preMatchRating = (
+                            data["preMatchRating"]["mean"]
+                            if "preMatchRating" in data
+                            else 0
+                        )
+                        postMatchRating = (
+                            data["postMatchRating"]["mean"]
+                            if "postMatchRating" in data
+                            else 0
+                        )
                         return round(postMatchRating - preMatchRating, 0)
         return None

@@ -1,10 +1,9 @@
-import json
+from app.mulpyversus.asyncmatches import AsyncMatch
 from app.mulpyversus.user import User
-from app.mulpyversus.matches import Match
 from app.mulpyversus.utils import *
 
 
-class UserMatchHistory:
+class AsyncUserMatchHistory:
     """Represent the match history of a user
     ::
     Args:
@@ -14,29 +13,29 @@ class UserMatchHistory:
         user = mlp.get_user_by_id("XXXXXXXX")
         user_match_history = UserMatchHistory(user, mlpyvrs)
     """
-
-    def __init__(self, user: User, mlpyvrs, all_pages: bool = False):
+    def __init__(self, user : User, mlpyvrs, all_pages : bool = False):
         self.user = user
         self.mlpyvrs = mlpyvrs
         self.rawData = []
+        self.all_pages = all_pages
+    
+    async def init(self):
         page = 1
         total_pages = 1
         while page <= total_pages:
-            result = json.loads(
-                mlpyvrs.request_data(
-                    f"matches/all/{user.get_account_id()}?count=1&page={page}"
-                ).content
-            )
-            total_pages = result["total_pages"] if all_pages else 1
+            result = await self.mlpyvrs.request_data(f"matches/all/{self.user.get_account_id()}?count=1&page={page}")
+            total_pages = result["total_pages"] if self.all_pages else 1
             self.rawData.extend(result["matches"])
             page += 1
-
+    
     def __repr__(self):
         return str(self.rawData)
-
-    def get_last_match(self):
+    
+    async def get_last_match(self):
         """Returns the last match of this user"""
         if self.rawData:
-            return Match(self.rawData[0]["id"], self.mlpyvrs)
+            last_match = AsyncMatch(self.rawData[0]["id"], self.mlpyvrs)
+            await last_match.init()
+            return last_match
         else:
             return None

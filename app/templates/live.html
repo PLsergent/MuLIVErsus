@@ -6,7 +6,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a onclick="loading()" href="/{{ user.get_account_id() }}">{{ username | title }}</a></li>
+        <li class="breadcrumb-item"><a onclick="loading()" href="/{{ user.get_username() }}">{{ user.get_username() | title }}</a></li>
         <li class="breadcrumb-item active">{{ title }} &nbsp; <span class="text-success">Auto refresh: <span id="timer"></span></span><span onclick="location.reload()" class="badge bg-purple">Refresh now</span></li>
     </ol>
 </nav>
@@ -96,7 +96,7 @@
         }, 1000);
     }
     async function refresh() {
-        fetch('/{{ user.get_account_id() }}/live').then(function (response) {
+        await fetch('/{{ user.get_account_id() }}/live').then(function (response) {
             // The API call was successful!
             return response.text();
         }).then(function (html) {
