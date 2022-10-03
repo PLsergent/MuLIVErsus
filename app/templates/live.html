@@ -13,7 +13,7 @@
 
 <div class="card mb-4 live-card-title">
     <div class="card-body">
-        <h5 class="card-title">Match {{ username | title }} </h5>
+        <h5 class="card-title">Match {{ user.get_username() | title }} </h5>
         <h1>
             {{ title }}
             {% if title.startswith('Live') %}
