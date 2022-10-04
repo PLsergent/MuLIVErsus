@@ -209,11 +209,11 @@ class AsyncMulpyVersus:
     async def request_data(self, rqst: string):
         """DON'T USE - Used by other classes"""
         req = await self.session.get(self.url + rqst, headers=self.header)
-        req = await req.json()
-        if "msg" in req and "User session" in req["msg"]:
+        resp = await req.json()
+        if "msg" in resp and "User session" in resp["msg"]:
             await self.refresh_token()
-            req = await self.session.get(self.url + rqst, headers=self.header)
-        return req
+            resp = await self.session.get(self.url + rqst, headers=self.header)
+        return resp
 
     async def get_match_by_id(self, id: string) -> AsyncMatch:
         match = AsyncMatch(id, self)

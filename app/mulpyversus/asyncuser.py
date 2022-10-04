@@ -1,6 +1,6 @@
 import string
 from app.mulpyversus.utils import *
-
+import aiohttp
 
 class UserNetwork:
     """Represent a UserNetwork object
@@ -165,7 +165,13 @@ class AsyncUser:
 
     async def init(self):
         self.profileData = await self.mlpyvrs.request_data("profiles/" + str(self.id))
+        if type(self.profileData) is aiohttp.ClientResponse:
+            print("Error while fetching data")
+            self.profileData = await self.profileData.json()
         self.accountData = await self.mlpyvrs.request_data("accounts/" + str(self.id))
+        if type(self.accountData) is aiohttp.ClientResponse:
+            print("Error while fetching data")
+            self.accountData = await self.accountData.json()
 
     def __repr__(self):
         return str(self.profileData)
