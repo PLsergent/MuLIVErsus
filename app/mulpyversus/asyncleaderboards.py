@@ -3,6 +3,7 @@ from app.mulpyversus.asyncuser import AsyncUser
 from app.mulpyversus.mulpyversus import *
 from app.mulpyversus.user import *
 from app.mulpyversus.utils import *
+import aiohttp
 
 
 class AsyncUserLeaderboardForGamemode:
@@ -31,6 +32,9 @@ class AsyncUserLeaderboardForGamemode:
             self.data = await self.mlpyvrs.request_data(
                 f"leaderboards/{self.character_slug}_{self.gamemode.value}/score-and-rank/{str(self.id)}"
             )
+        if type(self.data) is aiohttp.ClientResponse:
+            print("Error while fetching data: user leaderboard")
+            self.data = await self.data.json()
 
     async def refresh(self):
         """Used to refresh a AsyncUserLeaderboard object

@@ -35,6 +35,9 @@ class AsyncUsernameSearchResult:
             + str(self.limit)
             + ""
         )
+        if type(self.rawData) is aiohttp.ClientResponse:
+            print("Error while fetching data: user search result")
+            self.rawData = await self.rawData.json()
         self.page_ammount = ceil(self.get_total_result() / self.limit)
         if self.rawData["count"] == 0 and self.canReturnNone:
             return None

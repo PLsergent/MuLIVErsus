@@ -1,7 +1,7 @@
 from app.mulpyversus.asyncmatches import AsyncMatch
 from app.mulpyversus.user import User
 from app.mulpyversus.utils import *
-
+import aiohttp
 
 class AsyncUserMatchHistory:
     """Represent the match history of a user
@@ -24,6 +24,9 @@ class AsyncUserMatchHistory:
         total_pages = 1
         while page <= total_pages:
             result = await self.mlpyvrs.request_data(f"matches/all/{self.user.get_account_id()}?count=1&page={page}")
+            if type(result) is aiohttp.ClientResponse:
+                print("Error while fetching data: match history")
+                result = await result.json()
             total_pages = result["total_pages"] if self.all_pages else 1
             self.rawData.extend(result["matches"])
             page += 1
