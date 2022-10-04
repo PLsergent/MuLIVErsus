@@ -5,6 +5,7 @@
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css"/>
 <link href="{{ request.app.url_path_for('static', path='/style/datatable.css') }}" rel="stylesheet">
+<link href="{{ request.app.url_path_for('static', path='/style/progress-bar.css') }}" rel="stylesheet">
 
 
 <nav aria-label="breadcrumb">
@@ -14,19 +15,33 @@
     </ol>
 </nav>
 
-<div onclick="loading()" class="card mb-4 profile-card">
-    <div class="card-body">
-        <a class="stretched-link" href="/{{ user.get_account_id() }}/live"><h2>{{ username | title }} <span>Live Tracker</span></h2></a>
-        <div class="row mt-1">
-            <div class="col-lg-2"><h4>{{ user.get_user_level() }} <small class="text-muted">lvl</small></h4></div>
-            <div class="col-lg-2"><h4>{{ total_win }} <small class="text-muted">wins</small></h4></div>
-            <div class="col-lg-2"><h4>{{ total_loss }} <small class="text-muted">losses</small></h4></div>
-            <div class="col-lg-2"><h4>{{ total_win_percentage }}<small class="text-muted">%</small></h4></div>
-            <div class="col-lg-2"><h4>{{ user.get_total_ringouts() }} <small class="text-muted">ringouts</small></h4></div>
-            <div class="col-lg-2 text-white"><h4>Click here <i class="fa-solid fa-arrow-pointer"></i></h4></div>
+<div class="row winrate">
+    <div class="col-lg-10">
+        <div onclick="loading()" class="card mb-4 profile-card">
+            <div class="card-body">
+                <a class="stretched-link" href="/{{ user.get_account_id() }}/live"><h2>{{ username | title }} <span>Live Tracker</span></h2></a>
+                <div class="row mt-1">
+                    <div class="col-lg-2"><h4>{{ user.get_user_level() }} <small class="text-muted">lvl</small></h4></div>
+                    <div class="col-lg-2"><h4>{{ total_win }} <small class="text-muted">wins</small></h4></div>
+                    <div class="col-lg-2"><h4>{{ total_loss }} <small class="text-muted">losses</small></h4></div>
+                    <div class="col-lg-2"><h4>{{ total_win_percentage }}<small class="text-muted">%</small></h4></div>
+                    <div class="col-lg-2"><h4>{{ user.get_total_ringouts() }} <small class="text-muted">ringouts</small></h4></div>
+                    <div class="col-lg-2 text-white"><h4>Click here <i class="fa-solid fa-arrow-pointer"></i></h4></div>
+                </div>
+            </div>
         </div>
     </div>
+    <div class="col-lg-2">
+        <svg class="mt-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" data-value="{{ total_win_percentage }}">
+            <circle r="45" cx="50" cy="50" />
+            <!-- 282.78302001953125 is auto-calculated by path.getTotalLength() -->
+            <path class="meter" d="M5,50a45,45 0 1,0 90,0a45,45 0 1,0 -90,0" stroke-linecap="round" stroke-linejoin="round" stroke-dashoffset="282.78302001953125" stroke-dasharray="282.78302001953125" />
+            <!-- Value automatically updates based on data-value set above -->
+            <text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="20"></text>
+        </svg>
+    </div>
 </div>
+
 
 <h3>Top characters <img width="30px" src="{{ request.app.url_path_for('static', path='/images/character.png') }}"></img></h2>
 <hr>
@@ -103,6 +118,25 @@
             "lengthMenu": [3, 5, 10]
         });
     });
+
+    function progress() {
+        // Get all the Meters
+        const meters = document.querySelectorAll('svg[data-value] .meter');
+
+        meters.forEach((path) => {
+            // Get the length of the path
+            let length = path.getTotalLength();
+            // Get the value of the meter
+            let value = parseInt(path.parentNode.getAttribute('data-value'));
+            // Calculate the percentage of the total length
+            let to = length * ((100 - value) / 100);
+            // Trigger Layout in Safari hack https://jakearchibald.com/2013/animated-line-drawing-svg/
+            path.getBoundingClientRect();
+            // Set the Offset
+            path.style.strokeDashoffset = Math.max(0, to);   path.nextElementSibling.textContent = `${value}%`;
+        });
+    }
+    progress();
 </script>
 {% endblock %}
 

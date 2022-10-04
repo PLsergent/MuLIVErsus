@@ -1,0 +1,27 @@
+svg {
+  display: inline-flex;
+  vertical-align: bottom;
+  width: 100px;
+  height: 100px;
+}
+
+circle {
+  stroke: rgb(223, 223, 223);
+  stroke-width: 5px;
+  stroke-dasharray: 0;
+  fill: none;
+}
+
+.meter {
+  stroke-width: 10px;
+  stroke: #370046;
+  fill: none;
+  transition: stroke-dashoffset 1s cubic-bezier(0.43, 0.41, 0.22, 0.91);
+  transform-origin: center center;
+  transform: rotate(-90deg) scaleX(-1);
+}
+
+text {
+  fill: #370046;
+  font-weight: bold;
+}

@@ -2,6 +2,7 @@
 
 {% block content %}
 <link href="{{ request.app.url_path_for('static', path='/style/live.css') }}" rel="stylesheet">
+<link href="{{ request.app.url_path_for('static', path='/style/progress-bar.css') }}" rel="stylesheet">
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -13,7 +14,7 @@
 
 <div class="card mb-4 live-card-title">
     <div class="card-body">
-        <h5 class="card-title">Match {{ user.get_username() | title }} </h5>
+        <h5 class="card-title">Match {{ user.get_username() | title }} - <b>{{ time.strftime('%Y-%m-%d') }}</b> <i class="fa-solid fa-calendar"></i></h5>
         <h1>
             {{ title }}
             {% if title.startswith('Live') %}
@@ -41,12 +42,12 @@
 <div class="row">
     {% for player in players %}
         <div class="col-lg-6 mb-3">
-            {% if player.rating_updates > 0 %}
-            <div onclick="loading()" href="/{{ player.id }}" class="card live-card win-card">
-            {% elif player.rating_updates < 0 %}
-            <div onclick="loading()" href="/{{ player.id }}" class="card live-card loss-card">
-            {% else %}
+            {% if player.won is none %}
             <div onclick="loading()" href="/{{ player.id }}" class="card live-card">
+            {% elif player.won %}
+            <div onclick="loading()" href="/{{ player.id }}" class="card live-card win-card">
+            {% else %}
+            <div onclick="loading()" href="/{{ player.id }}" class="card live-card loss-card">
             {% endif %}
                 <div class="card-body">
                     <a href="/{{ player.username }}" class="h1 card-title stretched-link">{{ player.username }}</a>
@@ -56,7 +57,52 @@
                         <div class="col-lg-4"><h4>{{ player.total_ringouts }} <small class="text-muted">ringouts</small></h4></div>
                     </div>
                     <h4><small class="text-muted">{% if title.startswith('Finished') %}Played: {% else %}Best character:{% endif %}</small> {{ player.char }} <small class="text-dark">{{ player.score }}</small></h4>
-                    <img class="mb-3" width="150px" src="{{ request.app.url_path_for('static', path='/characters/'+player.char+'.png') }}" alt="{{ player.char }}">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <img class="mb-3" width="150px" src="{{ request.app.url_path_for('static', path='/characters/'+player.char+'.png') }}" alt="{{ player.char }}">
+                        </div>
+                        {% if title.startswith('Live') %}
+                        <div class="col-lg-7">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="text-stats"><small>Top wins:</small></div>
+                                    <img height="80px" src="{{ request.app.url_path_for('static', path='/characters_icons/'+ player.top_win_char +'.png') }}">
+                                </div>
+                                <div class="col-lg-6">
+                                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" data-value="{{ player.total_win_percentage }}">
+                                        <circle r="45" cx="50" cy="50" />
+                                        <!-- 282.78302001953125 is auto-calculated by path.getTotalLength() -->
+                                        <path class="meter" d="M5,50a45,45 0 1,0 90,0a45,45 0 1,0 -90,0" stroke-linecap="round" stroke-linejoin="round" stroke-dashoffset="282.78302001953125" stroke-dasharray="282.78302001953125" />
+                                        <!-- Value automatically updates based on data-value set above -->
+                                        <text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="20"></text>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        {% endif %}
+                        {% if title.startswith('Finished') %}
+                        <div class="col-lg-7">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="text-stats"><small>Ringouts:</small> <h4>{{ player.score }}</h4></div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="text-stats"><small >Dmg dealt:</small> <h4>{{ player.dmg_dealt }}</h4></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="text-stats"><small>Streak:</small> <h4>{{ player.streak }}</h4></div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="text-stats"><small>Top wins:</small></div>
+                                    <img height="70px" src="{{ request.app.url_path_for('static', path='/characters_icons/'+ player.top_win_char +'.png') }}">
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
                     <div class="row">
                         {% if player.rating_updates > 0 %}
                             <div class="col-lg-5"><h3>{{ player.rating }} <small class="text-success">+{{ player.rating_updates }}</small><small class="text-muted"> mmr</small></h3></div>
@@ -65,7 +111,7 @@
                         {% else %}
                             <div class="col-lg-5"><h3>{{ player.rating }}<small class="text-muted"> mmr</small></h3></div>
                         {% endif %}
-                        <div class="col-lg-7"><h3><small class="text-muted">{% if title.startswith('Finished') %}Char rank:{% else %}Global rank:{% endif %}</small> {{ player.rank }}<small class="text-muted"> #</small></h3></div>
+                        <div class="col-lg-7" style="text-align: right;"><h3><small class="text-muted">{% if title.startswith('Finished') %}Char rank:{% else %}Global rank:{% endif %}</small> {{ player.rank }}<small class="text-muted"> #</small></h3></div>
                     </div>
                 </div>
             </div>
@@ -103,12 +149,32 @@
             // This is the HTML from our response as a text string
             document.querySelector('html').innerHTML = html
             timer(81);
+            progress();
         }).catch(function (err) {
             // There was an error
             console.warn('Something went wrong.', err);
         });
     }
+
+    function progress() {
+        // Get all the Meters
+        const meters = document.querySelectorAll('svg[data-value] .meter');
+
+        meters.forEach((path) => {
+            // Get the length of the path
+            let length = path.getTotalLength();
+            // Get the value of the meter
+            let value = parseInt(path.parentNode.getAttribute('data-value'));
+            // Calculate the percentage of the total length
+            let to = length * ((100 - value) / 100);
+            // Trigger Layout in Safari hack https://jakearchibald.com/2013/animated-line-drawing-svg/
+            path.getBoundingClientRect();
+            // Set the Offset
+            path.style.strokeDashoffset = Math.max(0, to);   path.nextElementSibling.textContent = `${value}%`;
+        });
+    }
     timer(81);
+    progress();
 </script>
 {% endblock %}
 

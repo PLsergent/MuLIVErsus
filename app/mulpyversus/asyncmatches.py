@@ -128,6 +128,9 @@ class AsyncMatch:
 
     def get_completion_time(self) -> string:
         return self.rawData["completion_time"]
+    
+    def get_creation_time(self) -> string:
+        return self.rawData["created_at"]
 
     def get_access_level(self) -> string:
         """Gets the access level of the match (private etc..).
@@ -231,4 +234,20 @@ class AsyncMatch:
                             else 0
                         )
                         return round(postMatchRating - preMatchRating, 0)
+        return None
+    
+    def get_streak(self, id):
+        """Returns the streak post the last match from user id"""
+        if self.rawData and "data" in self.rawData:
+            if self.rawData["data"] and "ratingUpdates" in self.rawData["data"]:
+                for data in self.rawData["data"]["ratingUpdates"][
+                    "playerRatingChanges"
+                ]:
+                    if data["playerAccountID"] == id:
+                        post_match_stream = (
+                            data["postMatchRating"]["streak"]
+                            if "postMatchRating" in data
+                            else 0
+                        )
+                        return post_match_stream
         return None

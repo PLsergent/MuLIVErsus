@@ -62,7 +62,7 @@ a.h1 {
 a.h1:hover {
     color: #9D27D3;
     font-weight: bold;
-    text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0,0,0,0.15);
+    text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0, 0, 0, 0.15);
     transition: all 0.5s ease;
 }
 
@@ -70,4 +70,28 @@ small {
     font-weight: 400;
     margin: 0;
     font-size: 0.75em;
+}
+
+.live-card>.card-body {
+    padding: 1.8rem 2.5rem 1.8rem 2.5rem !important;
+}
+
+@font-face {
+    font-family: "BrenzaRegular-lgpRy";
+    src: url("./fonts/BrenzaRegular-lgpRy.ttf");
+}
+
+.text-stats>h4 {
+    font-size: 4em;
+    font-weight: 400;
+    color: #370046;
+    text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0, 0, 0, 0.15);
+    font-family: "BrenzaRegular-lgpRy";
+}
+
+.text-stats>small {
+    font-size: 1em !important;
+    color: #370046 !important;
+    font-weight: 700 !important;
+    font-family: 'Open Sans', sans-serif !important;
 }

@@ -1,6 +1,8 @@
+import random
 import string
 from app.mulpyversus.utils import *
 import aiohttp
+
 
 class UserNetwork:
     """Represent a UserNetwork object
@@ -183,7 +185,7 @@ class AsyncUser:
             await someone.refresh_user()
         """
         await self.init(self.get_account_id(), self)
-    
+
     def get_code(self):
         return self.profileData["code"]
 
@@ -525,7 +527,13 @@ class AsyncUser:
                 ]
             ]
 
-    def get_character_rating(self, character : Characters, rating : RatingKeys, gm : GamemodeRating, character_slug : str = None) -> int:
+    def get_character_rating(
+        self,
+        character: Characters,
+        rating: RatingKeys,
+        gm: GamemodeRating,
+        character_slug: str = None,
+    ) -> int:
         """Return the asked rating for a character
         If none, return -1.0
         ::
@@ -539,13 +547,23 @@ class AsyncUser:
         """
         if character_slug is None and character is not None:
             character_slug = character.value["slug"]
-        if gm.value in self.profileData['server_data']:
+        if gm.value in self.profileData["server_data"]:
             maxKey = 0
-            for key in self.profileData['server_data'][gm.value]:
-                maxKey = int(key) if int(key)>maxKey else maxKey
-            if character_slug in self.profileData['server_data'][gm.value][str(maxKey)]["ratings"]:
-                if rating.value in self.profileData['server_data'][gm.value][str(maxKey)]["ratings"][character_slug]:
-                    return self.profileData['server_data'][gm.value][str(maxKey)]["ratings"][character_slug][rating.value]
+            for key in self.profileData["server_data"][gm.value]:
+                maxKey = int(key) if int(key) > maxKey else maxKey
+            if (
+                character_slug
+                in self.profileData["server_data"][gm.value][str(maxKey)]["ratings"]
+            ):
+                if (
+                    rating.value
+                    in self.profileData["server_data"][gm.value][str(maxKey)][
+                        "ratings"
+                    ][character_slug]
+                ):
+                    return self.profileData["server_data"][gm.value][str(maxKey)][
+                        "ratings"
+                    ][character_slug][rating.value]
         return -1.0
 
     def get_top_ranked_character_in_gamemode(self, gm: GamemodeRating):
@@ -558,6 +576,8 @@ class AsyncUser:
             >>> .get_top_ranked_character(GamemodeRating.NAMEOGAMEMODE)
         """
         maxKey = 0
+        if gm.value not in self.profileData["server_data"]:
+            return random.choice(list(Characters)).value["slug"]
         for key in self.profileData["server_data"][gm.value]:
             maxKey = int(key) if int(key) > maxKey else maxKey
         if "topRating" in self.profileData["server_data"][gm.value][str(maxKey)]:

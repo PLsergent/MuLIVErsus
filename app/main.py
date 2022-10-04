@@ -1,7 +1,9 @@
 import asyncio
+from pipes import Template
 import traceback
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import yaml
@@ -12,11 +14,13 @@ from app.mulpyversus.utils import (
     GamemodeRating,
     RatingKeys,
     get_character_from_slug,
+    slug_to_display,
 )
 from app.mulpyversus.mulpyversus import MulpyVersus
 from app.mulpyversus.asyncmulpyversus import AsyncMulpyVersus
 import os
 from starlette.middleware.sessions import SessionMiddleware
+from datetime import datetime
 
 
 app = FastAPI()
@@ -39,6 +43,18 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     await mlpyvrs.close_session()
+
+
+@app.exception_handler(StarletteHTTPException)
+async def validation_exception_handler(request, exc):
+    return templates.TemplateResponse(
+        "404.html",
+        {
+            "request": request,
+            "title": "404",
+            "message": "You lost your way, please go back to the homepage.",
+        },
+    )
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -94,8 +110,13 @@ async def get_user_info_for_gamemode(
     if rank is not None:
         info["rank"] = "{:,}".format(rank)
 
+    info["top_win_char"] = slug_to_display(
+        list(user.get_top_character_wins(1).keys())[0]
+    )
+
+    # match info
     info["rating_updates"] = 0
-    info["score"] = ""
+    info["won"] = None
     if match is not None and match.get_state() != "open":
         info["rating_updates"] = (
             match.get_rating_update(info["id"])
@@ -103,6 +124,14 @@ async def get_user_info_for_gamemode(
             else 0
         )
         info["score"] = match.get_player_data_by_id(info["id"]).get_score()
+        info["dmg_dealt"] = match.get_player_data_by_id(info["id"]).get_damage_dealt()
+        info["streak"] = (
+            match.get_streak(info["id"])
+            if match.get_streak(info["id"]) is not None
+            else 0
+        )
+        info["won"] = True if info["id"] in match.rawData["win"] else False
+
     return info
 
 
@@ -149,7 +178,7 @@ async def profile(request: Request, id: str):
         user_search_results = await mlpyvrs.get_user_by_username(id)
         if user_search_results is not None:
             user = await user_search_results.get_most_relevant_user()
-        
+
         if user_search_results is None or user is None:
             user = await mlpyvrs.get_user_by_id(id)
 
@@ -164,14 +193,6 @@ async def profile(request: Request, id: str):
                     "message": "No data found for this user.",
                 },
             )
-
-        total_win = user.get_match_won_count(
-            GamemodeMatches.OneVsOne
-        ) + user.get_match_won_count(GamemodeMatches.TwoVsTwo)
-        total_loss = user.get_match_lost_count(
-            GamemodeMatches.OneVsOne
-        ) + user.get_match_lost_count(GamemodeMatches.TwoVsTwo)
-        total_win_percentage = round(user.get_global_win_percentage(), 2)
 
         # Top characters
         top_characters_slug = user.get_top_character_wins(9)
@@ -206,6 +227,10 @@ async def profile(request: Request, id: str):
         TwoVsTwo_infos = gamemode_results[1]
 
         username = OneVsOne_infos["username"]
+        total_win = OneVsOne_infos["total_win"]
+        total_loss = OneVsOne_infos["total_loss"]
+        total_win_percentage = OneVsOne_infos["total_win_percentage"]
+
     except:
         traceback.print_exc()
         return templates.TemplateResponse(
@@ -290,6 +315,7 @@ async def live(request: Request, id: str):
         gmrank = GamemodeRank.OneVsOne if match_type == "1v1" else GamemodeRank.TwoVsTwo
 
         jobs = []
+        time = last_match.get_creation_time()
         if title.startswith("Live"):
             for id in last_match.rawData["players"]["current"]:
                 if id == user.get_account_id():
@@ -303,6 +329,7 @@ async def live(request: Request, id: str):
                         get_user_info_for_gamemode(mlpyvrs, id, gmrating, gmrank)
                     )
         elif title.startswith("Finished"):
+            time = last_match.get_completion_time()
             for id in last_match.rawData["win"] + last_match.rawData["loss"]:
                 if id == user.get_account_id():
                     jobs.append(
@@ -317,6 +344,7 @@ async def live(request: Request, id: str):
                         )
                     )
         players = await asyncio.gather(*jobs)
+        timedate = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S+00:00")
 
     except:
         traceback.print_exc()
@@ -335,6 +363,7 @@ async def live(request: Request, id: str):
             "request": request,
             "title": title,
             "user": user,
+            "time": timedate,
             "players": players,
         },
     )
