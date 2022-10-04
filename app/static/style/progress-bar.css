@@ -14,7 +14,7 @@ circle {
 
 .meter {
   stroke-width: 10px;
-  stroke: #370046;
+  stroke: #a063ab;
   fill: none;
   transition: stroke-dashoffset 1s cubic-bezier(0.43, 0.41, 0.22, 0.91);
   transform-origin: center center;
