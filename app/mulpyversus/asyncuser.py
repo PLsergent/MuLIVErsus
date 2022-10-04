@@ -166,11 +166,11 @@ class AsyncUser:
     async def init(self):
         self.profileData = await self.mlpyvrs.request_data("profiles/" + str(self.id))
         if type(self.profileData) is aiohttp.ClientResponse:
-            print("Error while fetching data")
+            print("Error while fetching data: user")
             self.profileData = await self.profileData.json()
         self.accountData = await self.mlpyvrs.request_data("accounts/" + str(self.id))
         if type(self.accountData) is aiohttp.ClientResponse:
-            print("Error while fetching data")
+            print("Error while fetching data: user")
             self.accountData = await self.accountData.json()
 
     def __repr__(self):

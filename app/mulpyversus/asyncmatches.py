@@ -1,6 +1,6 @@
 import string
 from app.mulpyversus.asyncuser import AsyncUser
-import json
+import aiohttp
 
 
 class AsyncPlayerMatchData:
@@ -85,6 +85,9 @@ class AsyncMatch:
 
     async def init(self):
         self.rawData = await self.mlpyvrs.request_data("matches/" + self.id)
+        if type(self.rawData) is aiohttp.ClientResponse:
+            print("Error while fetching data: match")
+            self.rawData = await self.rawData.json()
 
     def __repr__(self):
         return str(self.rawData)
