@@ -8,7 +8,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item"><a onclick="loading()" href="/{{ user.get_username() }}">{{ user.get_username() | title }}</a></li>
-        <li class="breadcrumb-item active">{{ title }} &nbsp; <span class="text-success">Auto refresh: <span id="timer"></span></span><span onclick="location.reload()" class="badge bg-purple">Refresh now</span></li>
+        <li class="breadcrumb-item active">{{ title }} &nbsp; <span class="text-secondary">Auto refresh: <span id="timer"></span></span><span onclick="location.reload()" class="badge bg-purple">Refresh now</span></li>
     </ol>
 </nav>
 
@@ -18,23 +18,11 @@
         <h1>
             {{ title }}
             {% if title.startswith('Live') %}
-                <lord-icon
-                    src="https://cdn.lordicon.com/qhgmphtg.json"
-                    trigger="hover"
-                    style="width:70px;height:70px">
-                </lord-icon>
+                <i class="fa-solid fa-circle-play"></i>
             {% elif title.startswith('Finished') %}
-                <lord-icon
-                    src="https://cdn.lordicon.com/lupuorrc.json"
-                    trigger="hover"
-                    style="width:70px;height:70px">
-                </lord-icon>
+                <i class="fa-solid fa-flag-checkered"></i>
             {% else %}
-                <lord-icon
-                    src="https://cdn.lordicon.com/iltqorsz.json"
-                    trigger="hover"
-                    style="width:70px;height:70px">
-                </lord-icon>
+                <i class="fa-solid fa-magnifying-glass"></i>
             {% endif %}
         </h1>
     </div>

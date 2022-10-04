@@ -48,6 +48,14 @@ h2 {
     cursor: pointer;
 }
 
+.text-success {
+    color: #9D27D3 !important;
+}
+
+.text-danger {
+    color: #D92832 !important;
+}
+
 @media(max-width: 1000px) {
     h2 {
         font-size: 2em;
