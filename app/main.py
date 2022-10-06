@@ -1,13 +1,12 @@
 import asyncio
-from pipes import Template
 import traceback
-from fastapi import FastAPI, Request, Form
+from typing import List, Union
+from fastapi import FastAPI, Request, Form, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import yaml
-from app.mulpyversus import leaderboards
 from app.mulpyversus.utils import (
     GamemodeMatches,
     GamemodeRank,
@@ -16,7 +15,6 @@ from app.mulpyversus.utils import (
     get_character_from_slug,
     slug_to_display,
 )
-from app.mulpyversus.mulpyversus import MulpyVersus
 from app.mulpyversus.asyncmulpyversus import AsyncMulpyVersus
 import os
 from starlette.middleware.sessions import SessionMiddleware
@@ -97,6 +95,7 @@ async def get_user_info_for_gamemode(
     char = get_character_from_slug(character_slug)
     info["ranked_win"] = user.get_wins_with_character(char)
     info["char"] = char.value["name"]
+    info["char_slug"] = character_slug
     info["rating"] = int(user.get_character_rating(char, RatingKeys.Mean, gmrating))
 
     info["rank"] = -1
@@ -171,6 +170,59 @@ async def get_char_infos(character_slug: str, user, wins):
         "TvT_rank": rankTvT,
     }
 
+
+async def get_winrate_against_char(usmh, user_id):
+    winrate = {}
+    analyzed = 0
+    for match in usmh:
+        match = match.rawData
+        if "win" in match: 
+            won = True if user_id in match["win"] else False
+            opponents = match["loss"] if user_id in match["win"] else match["win"]
+            if "server_data" in match and "PlayerData" in match["server_data"]:
+                analyzed += 1
+                for data in match["server_data"]["PlayerData"]:
+                    if data["AccountId"] in opponents:
+                        char = data["CharacterSlug"]
+                        if char not in winrate:
+                            winrate[char] = {"wins": 0, "losses": 0}
+                        if won:
+                            winrate[char]["wins"] += 1
+                        else:
+                            winrate[char]["losses"] += 1
+    return winrate, analyzed
+
+
+# /id?slugs=slug1&slugs=slug2
+@app.get("/{id}/winrate")
+async def winrate_against_char(request: Request, id: str, slugs: Union[List[str], None] = Query(default=None)):
+    try:
+        user = await mlpyvrs.get_user_by_id(id)
+        if "code" in user.profileData and user.get_code() == 404:
+            user_search_results = await mlpyvrs.get_user_by_username(id)
+            if user_search_results is not None:
+                user = await user_search_results.get_most_relevant_user()
+            else:
+                return templates.TemplateResponse("winrate_live.html", {"request": request, "error": True})
+        
+        match_history = await mlpyvrs.get_user_match_history(user, count=200, all_pages=False)
+        history_for_gamemode = await match_history.get_matches()
+        winrate, matches_analyzed = await get_winrate_against_char(history_for_gamemode, user.get_account_id())
+        winrates = {}
+        for slug in slugs:
+            if slug in winrate:
+                winrates[slug_to_display(slug)] = winrate[slug]
+        return templates.TemplateResponse(
+            "winrate_live.html",
+            {
+                "request": request,
+                "winrates": winrates,
+                "matches_analyzed": matches_analyzed
+            }
+        )
+    except:
+        traceback.print_exc()
+        return templates.TemplateResponse("winrate_live.html", {"request": request, "error": True})
 
 @app.get("/{id}")
 async def profile(request: Request, id: str):
@@ -344,6 +396,7 @@ async def live(request: Request, id: str):
                         )
                     )
         players = await asyncio.gather(*jobs)
+        slugs_url_query = "?slugs=" + "&slugs=".join([player["char_slug"] for player in players if player["id"] != user.get_account_id()])
         timedate = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S+00:00")
 
     except:
@@ -365,5 +418,6 @@ async def live(request: Request, id: str):
             "user": user,
             "time": timedate,
             "players": players,
+            "slugs_url_query": slugs_url_query
         },
     )

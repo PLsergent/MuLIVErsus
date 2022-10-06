@@ -1,0 +1,44 @@
+<style>
+    .analyse {
+        font-size: 1.8em;
+        color: #592c66;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .ratio {
+        font-size: 1.8em;
+        color: #9D27D3;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .d-inline {
+        display: inline!important;
+        vertical-align: middle;
+    }
+
+    .table {
+        margin-bottom: 0!important;
+    }
+</style>
+
+{% if error %}
+    <h5>Error while analyzing previous match</h3>
+{% else %}
+<div class="table-responsive-lg">
+    <table class="table table-hover table-borderless align-middle" style="width:100%">
+        <tbody>
+            <tr>
+                <td><h5 class="analyse d-inline">Matches analyzed: {{ matches_analyzed }}</h5></td>
+                {% for char, wr in winrates.items() %}
+                    <td>
+                        <h6 class="ratio d-inline">{{ wr.wins }}/{{ wr.losses }}</h6>
+                        <img class="d-inline" height="50px" src="{{ request.app.url_path_for('static', path='/characters_icons/'+ char +'.png') }}">
+                    </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}

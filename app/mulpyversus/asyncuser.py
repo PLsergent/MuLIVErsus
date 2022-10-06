@@ -666,7 +666,7 @@ class AsyncUser:
         """
         return (
             self.profileData["matches"][gm.value]["win"]
-            if gm.value in self.profileData["matches"]
+            if gm.value in self.profileData["matches"] and "win" in self.profileData["matches"][gm.value]
             else 0
         )
 

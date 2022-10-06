@@ -1,7 +1,6 @@
 import json
 import random
 import string
-from app.mulpyversus.mulpyversus import *
 from app.mulpyversus.utils import *
 
 

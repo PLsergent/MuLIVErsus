@@ -105,3 +105,10 @@ hr {
         width: 129px;
     }
 }
+
+@media (min-width: 992px) {
+    .col-lg-15 {
+        flex: 0 0 auto;
+        width: 12%;
+    }
+}

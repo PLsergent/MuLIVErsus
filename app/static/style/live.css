@@ -95,3 +95,9 @@ small {
     font-weight: 700 !important;
     font-family: 'Open Sans', sans-serif !important;
 }
+
+#winrate {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}

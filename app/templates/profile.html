@@ -21,12 +21,12 @@
             <div class="card-body">
                 <a class="stretched-link" href="/{{ user.get_account_id() }}/live"><h2>{{ username | title }} <span>Live Tracker</span></h2></a>
                 <div class="row mt-1">
-                    <div class="col-lg-2"><h4>{{ user.get_user_level() }} <small class="text-muted">lvl</small></h4></div>
+                    <div class="col-lg-15"><h4>{{ user.get_user_level() }} <small class="text-muted">lvl</small></h4></div>
                     <div class="col-lg-2"><h4>{{ total_win }} <small class="text-muted">wins</small></h4></div>
                     <div class="col-lg-2"><h4>{{ total_loss }} <small class="text-muted">losses</small></h4></div>
                     <div class="col-lg-2"><h4>{{ total_win_percentage }}<small class="text-muted">%</small></h4></div>
-                    <div class="col-lg-2"><h4>{{ user.get_total_ringouts() }} <small class="text-muted">ringouts</small></h4></div>
-                    <div class="col-lg-2 text-white"><h4>Click here <i class="fa-solid fa-arrow-pointer"></i></h4></div>
+                    <div class="col-lg-3"><h4>{{ user.get_total_ringouts() }} <small class="text-muted">ringouts</small></h4></div>
+                    <div class="col-lg-1" style="text-align: right"><h4><i class="fa-solid fa-arrow-pointer"></i></h4></div>
                 </div>
             </div>
         </div>
@@ -52,11 +52,11 @@
         <tr>
             <th></th>
             <th>Name</th>
-            <th>Wins</th>
-            <th>1's mmr</th>
-            <th>1's char rank</th>
-            <th>2's mmr</th>
-            <th>2's char rank</th>
+            <th>Wins <i class="fas fa-trophy"></i></th>
+            <th>1's mmr <i class="fas fa-award"></i></th>
+            <th>1's char rank <i class="fas fa-list"></i></th>
+            <th>2's mmr <i class="fas fa-award"></i></th>
+            <th>2's char rank <i class="fas fa-list-ul"></i></th>
         </tr>
     </thead>
     <tbody>

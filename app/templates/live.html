@@ -14,17 +14,26 @@
 
 <div class="card mb-4 live-card-title">
     <div class="card-body">
-        <h5 class="card-title">Match {{ user.get_username() | title }} - <b>{{ time.strftime('%Y-%m-%d') }}</b> <i class="fa-solid fa-calendar"></i></h5>
-        <h1>
-            {{ title }}
-            {% if title.startswith('Live') %}
-                <i class="fa-solid fa-circle-play"></i>
-            {% elif title.startswith('Finished') %}
-                <i class="fa-solid fa-flag-checkered"></i>
-            {% else %}
-                <i class="fa-solid fa-magnifying-glass"></i>
-            {% endif %}
-        </h1>
+        <div class="row">
+            <div class="col-lg-4">
+                <h5 class="card-title">Match {{ user.get_username() | title }} - <b>{{ time.strftime('%Y-%m-%d') }}</b> <i class="fa-solid fa-calendar"></i></h5>
+                <h1>
+                    {{ title }}
+                    {% if title.startswith('Live') %}
+                        <i class="fa-solid fa-circle-play"></i>
+                    {% elif title.startswith('Finished') %}
+                        <i class="fa-solid fa-flag-checkered"></i>
+                    {% else %}
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    {% endif %}
+                </h1>
+            </div>
+            <div id="winrate" class="col-lg-8" style="display: flex; justify-content: right; align-items: center;">
+                <h4 class="d-inline text-muted" style="margin-bottom: 0;">Loading matchup winrate...</h4>
+                <img class="d-inline" height="60px" src="{{ request.app.url_path_for('static', path='/images/loading.gif') }}" alt="">
+            </div>
+        </div>
+        
     </div>
 </div>
 <div class="row">
@@ -41,10 +50,10 @@
                     <a href="/{{ player.username }}" class="h1 card-title stretched-link">{{ player.username }}</a>
                     <div class="row">
                         <div class="col-lg-4"><h4>{{ player.total_win }} <small class="text-muted">wins</small></h4></div>
-                        <div class="col-lg-4"><h4>{{ player.total_win_percentage }}<small class="text-muted">%</small></h4></div>
-                        <div class="col-lg-4"><h4>{{ player.total_ringouts }} <small class="text-muted">ringouts</small></h4></div>
+                        <div class="col-lg-3"><h4>{{ player.total_win_percentage }}<small class="text-muted">%</small></h4></div>
+                        <div class="col-lg-5"><h4>{{ player.total_ringouts }} <small class="text-muted">ringouts</small></h4></div>
                     </div>
-                    <h4><small class="text-muted">{% if title.startswith('Finished') %}Played: {% else %}Best character:{% endif %}</small> {{ player.char }} <small class="text-dark">{{ player.score }}</small></h4>
+                    <h4><small class="text-muted">{% if title.startswith('Finished') %}Played: {% else %}Best character:{% endif %}</small> {{ player.char }}</h4>
                     <div class="row">
                         <div class="col-lg-5">
                             <img class="mb-3" width="150px" src="{{ request.app.url_path_for('static', path='/characters/'+player.char+'.png') }}" alt="{{ player.char }}">
@@ -136,8 +145,22 @@
         }).then(function (html) {
             // This is the HTML from our response as a text string
             document.querySelector('html').innerHTML = html
-            timer(81);
+            timer(121);
             progress();
+            winrate();
+        }).catch(function (err) {
+            // There was an error
+            console.warn('Something went wrong.', err);
+        });
+    }
+
+    async function winrate() {
+        await fetch('/{{ user.get_username() }}/winrate{{ slugs_url_query|safe }}').then(function (response) {
+            // The API call was successful!
+            return response.text();
+        }).then(function (html) {
+            // This is the HTML from our response as a text string
+            document.querySelector('#winrate').innerHTML = html
         }).catch(function (err) {
             // There was an error
             console.warn('Something went wrong.', err);
@@ -161,8 +184,9 @@
             path.style.strokeDashoffset = Math.max(0, to);   path.nextElementSibling.textContent = `${value}%`;
         });
     }
-    timer(81);
+    timer(121);
     progress();
+    winrate();
 </script>
 {% endblock %}
 

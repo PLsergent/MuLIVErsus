@@ -1,8 +1,6 @@
 from math import ceil
 import string
-import requests
 import aiohttp
-import asyncio
 import json
 from app.mulpyversus.async_user_matches_history import AsyncUserMatchHistory
 from app.mulpyversus.asyncleaderboards import *
@@ -241,12 +239,12 @@ class AsyncMulpyVersus:
         search = await search.init()
         return search
 
-    async def get_user_match_history(self, user: User) -> AsyncUserMatchHistory:
+    async def get_user_match_history(self, user: User, count: int = 1, all_pages: bool = False) -> AsyncUserMatchHistory:
         """Returns a UserMatchHistory object for that user
         ::
         Usefull if you want all the match history for that user
         """
-        history = AsyncUserMatchHistory(user, self)
+        history = AsyncUserMatchHistory(user, self, count=count, all_pages=all_pages)
         await history.init()
         return history
 
