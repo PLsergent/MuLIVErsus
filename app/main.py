@@ -3,22 +3,19 @@ import traceback
 from typing import List, Union
 from fastapi import FastAPI, Request, Form, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import yaml
 from app.mulpyversus.utils import (
-    GamemodeMatches,
     GamemodeRank,
     GamemodeRating,
-    RatingKeys,
-    get_character_from_slug,
     slug_to_display,
 )
 from app.mulpyversus.asyncmulpyversus import AsyncMulpyVersus
 import os
 from starlette.middleware.sessions import SessionMiddleware
 from datetime import datetime
+from app.utils.utils_process import *
 
 
 app = FastAPI()
@@ -29,30 +26,34 @@ templates = Jinja2Templates(directory="app/templates")
 
 with open("./app/.config.yml", "r") as stream:
     data = yaml.safe_load(stream)
-STEAM_TOKEN = data["steam_token"]
-mlpyvrs = AsyncMulpyVersus(STEAM_TOKEN)
+STEAM_TOKEN_MAIN = data["steam_token_main"]
+mlpyvrs = AsyncMulpyVersus(STEAM_TOKEN_MAIN)
+
+if "steam_token_stats" in data:
+    STEAM_TOKEN_STATS = data["steam_token_stats"]
+    mlpyvrs_stats = AsyncMulpyVersus(STEAM_TOKEN_STATS)
+
+if "steam_token_live" in data:
+    STEAM_TOKEN_LIVE = data["steam_token_live"]
+    mlpyvrs_live = AsyncMulpyVersus(STEAM_TOKEN_LIVE)
 
 
 @app.on_event("startup")
 async def startup_event():
     await mlpyvrs.init()
+    if "steam_token_stats" in data:
+        await mlpyvrs_stats.init()
+    if "steam_token_live" in data:
+        await mlpyvrs_live.init()
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
     await mlpyvrs.close_session()
-
-
-@app.exception_handler(StarletteHTTPException)
-async def validation_exception_handler(request, exc):
-    return templates.TemplateResponse(
-        "404.html",
-        {
-            "request": request,
-            "title": "404",
-            "message": "You lost your way, please go back to the homepage.",
-        },
-    )
+    if "steam_token_stats" in data:
+        await mlpyvrs_stats.close_session()
+    if "steam_token_live" in data:
+        await mlpyvrs_live.close_session()
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -67,132 +68,6 @@ def login(username: str = Form()):
     return RedirectResponse(f"/{username}", status_code=303)
 
 
-async def get_user_info_for_gamemode(
-    mlpyvrs, id, gmrating: GamemodeRating, gmrank: GamemodeRank, match=None, user=None
-):
-    info = {}
-    if user is None:
-        user = await mlpyvrs.get_user_by_id(id)
-    else:
-        user = user
-    info["id"] = user.get_account_id()
-    info["username"] = user.get_username()
-
-    info["total_win"] = user.get_match_won_count(
-        GamemodeMatches.OneVsOne
-    ) + user.get_match_won_count(GamemodeMatches.TwoVsTwo)
-    info["total_loss"] = user.get_match_lost_count(
-        GamemodeMatches.OneVsOne
-    ) + user.get_match_lost_count(GamemodeMatches.TwoVsTwo)
-    info["total_win_percentage"] = round(user.get_global_win_percentage(), 2)
-    info["total_ringouts"] = user.get_total_ringouts()
-
-    character_slug = (
-        user.get_top_ranked_character_in_gamemode(gmrating)
-        if match is None
-        else match.get_player_data_by_id(info["id"]).get_character_slug()
-    )
-    char = get_character_from_slug(character_slug)
-    info["ranked_win"] = user.get_wins_with_character(char)
-    info["char"] = char.value["name"]
-    info["char_slug"] = character_slug
-    info["rating"] = int(user.get_character_rating(char, RatingKeys.Mean, gmrating))
-
-    info["rank"] = -1
-    if match is not None:
-        leaderboard = await mlpyvrs.get_user_leaderboard(
-            user.get_account_id(), gmrank, character_slug=character_slug
-        )
-    else:
-        leaderboard = await mlpyvrs.get_user_leaderboard(user.get_account_id(), gmrank)
-    rank = leaderboard.get_rank_in_gamemode() if leaderboard is not None else None
-    if rank is not None:
-        info["rank"] = "{:,}".format(rank)
-
-    info["top_win_char"] = slug_to_display(
-        list(user.get_top_character_wins(1).keys())[0]
-    )
-
-    # match info
-    info["rating_updates"] = 0
-    info["won"] = None
-    if match is not None and match.get_state() != "open":
-        info["rating_updates"] = (
-            match.get_rating_update(info["id"])
-            if match.get_rating_update(info["id"]) is not None
-            else 0
-        )
-        info["score"] = match.get_player_data_by_id(info["id"]).get_score()
-        info["dmg_dealt"] = match.get_player_data_by_id(info["id"]).get_damage_dealt()
-        info["streak"] = (
-            match.get_streak(info["id"])
-            if match.get_streak(info["id"]) is not None
-            else 0
-        )
-        info["won"] = True if info["id"] in match.rawData["win"] else False
-
-    return info
-
-
-async def get_char_infos(character_slug: str, user, wins):
-    character = get_character_from_slug(character_slug)
-    leaderboardOvO = await mlpyvrs.get_user_leaderboard(
-        user.get_account_id(),
-        GamemodeRank.OneVsOne,
-        character_slug=character_slug,
-    )
-    rankOvO = leaderboardOvO.get_rank_in_gamemode()
-    leaderboardTvT = await mlpyvrs.get_user_leaderboard(
-        user.get_account_id(),
-        GamemodeRank.TwoVsTwo,
-        character_slug=character_slug,
-    )
-    rankTvT = leaderboardTvT.get_rank_in_gamemode()
-    if rankOvO is not None:
-        rankOvO = "{:,}".format(rankOvO)
-    if rankTvT is not None:
-        rankTvT = "{:,}".format(rankTvT)
-
-    return {
-        "name": character.value["name"],
-        "wins": wins,
-        "OvO_MMR": int(
-            user.get_character_rating(
-                character, RatingKeys.Mean, GamemodeRating.OneVsOne
-            )
-        ),
-        "TvT_MMR": int(
-            user.get_character_rating(
-                character, RatingKeys.Mean, GamemodeRating.TwoVsTwo
-            )
-        ),
-        "OvO_rank": rankOvO,
-        "TvT_rank": rankTvT,
-    }
-
-
-async def get_winrate_against_char(usmh, user_id):
-    winrate = {}
-    analyzed = 0
-    for match in usmh:
-        match = match.rawData
-        if "win" in match: 
-            won = True if user_id in match["win"] else False
-            opponents = match["loss"] if user_id in match["win"] else match["win"]
-            if "server_data" in match and "PlayerData" in match["server_data"]:
-                analyzed += 1
-                for data in match["server_data"]["PlayerData"]:
-                    if data["AccountId"] in opponents:
-                        char = data["CharacterSlug"]
-                        if char not in winrate:
-                            winrate[char] = {"wins": 0, "losses": 0}
-                        if won:
-                            winrate[char]["wins"] += 1
-                        else:
-                            winrate[char]["losses"] += 1
-    return winrate, analyzed
-
-
 # /id?slugs=slug1&slugs=slug2
 @app.get("/{id}/winrate")
 async def winrate_against_char(request: Request, id: str, slugs: Union[List[str], None] = Query(default=None)):
@@ -205,7 +80,10 @@ async def winrate_against_char(request: Request, id: str, slugs: Union[List[str]
             else:
                 return templates.TemplateResponse("winrate_live.html", {"request": request, "error": True})
         
-        match_history = await mlpyvrs.get_user_match_history(user, count=200, all_pages=False)
+        if "steam_token_live" in data:
+            match_history = await mlpyvrs_live.get_user_match_history(user, count=200, all_pages=False)
+        else:
+            match_history = await mlpyvrs.get_user_match_history(user, count=200, all_pages=False)
         history_for_gamemode = await match_history.get_matches()
         winrate, matches_analyzed = await get_winrate_against_char(history_for_gamemode, user.get_account_id())
         winrates = {}
@@ -223,6 +101,7 @@ async def winrate_against_char(request: Request, id: str, slugs: Union[List[str]
     except:
         traceback.print_exc()
         return templates.TemplateResponse("winrate_live.html", {"request": request, "error": True})
+
 
 @app.get("/{id}")
 async def profile(request: Request, id: str):
@@ -251,7 +130,7 @@ async def profile(request: Request, id: str):
 
         top_characters = await asyncio.gather(
             *[
-                get_char_infos(character_slug, user, wins)
+                get_char_infos(character_slug, user, wins, mlpyvrs)
                 for character_slug, wins in top_characters_slug.items()
             ]
         )
@@ -309,6 +188,43 @@ async def profile(request: Request, id: str):
             "TwoVsTwo_infos": TwoVsTwo_infos,
         },
     )
+
+
+@app.get("/{id}/advanced")
+async def advanced_profile(request: Request, id: str):
+    try:
+        user_search_results = await mlpyvrs.get_user_by_username(id)
+        if user_search_results is not None:
+            user = await user_search_results.get_most_relevant_user()
+
+        if user_search_results is None or user is None:
+            user = await mlpyvrs.get_user_by_id(id)
+
+        if (
+            user is None or "code" in user.profileData and user.get_code() == 404
+        ) or "stat_trackers" not in user.profileData["server_data"]:
+            return templates.TemplateResponse("advanced_stats.html", {"request": request, "error": True})
+        
+        if "steam_token_stats" in data:
+            match_history = await mlpyvrs_stats.get_user_match_history(user, count=30, all_pages=False)
+        else:
+            match_history = await mlpyvrs.get_user_match_history(user, count=30, all_pages=False)
+        history_for_gamemode = await match_history.get_matches()
+        adv_stats, matches_analyzed = await get_matchup_stats(history_for_gamemode, user.get_account_id())
+        advanced_stats = {}
+        for char, stats in adv_stats.items():
+            advanced_stats[slug_to_display(char)] = stats
+        return templates.TemplateResponse(
+            "advanced_profile.html",
+            {
+                "request": request,
+                "advanced_stats": advanced_stats,
+                "matches_analyzed": matches_analyzed
+            }
+        )
+    except:
+        traceback.print_exc()
+        return templates.TemplateResponse("advanced_profile.html", {"request": request, "error": True})
 
 
 @app.get("/{id}/live")

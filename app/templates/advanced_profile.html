@@ -1,0 +1,36 @@
+{% if error %}
+    <h5>Error while analyzing previous matches</h5>
+{% else %}
+<h4 class="text-muted">{{ matches_analyzed }} matches analyzed</h4>
+<p class="mb-3 text-bold">Stats when playing against:</p>
+<div class="table-responsive-lg">
+    <table id="advanced_stats" class="table table-hover table-borderless align-middle" style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Against</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Winrate</th>
+                <th>Avg dmg to take stock</th>
+                <th>Avg dmg to lose stock</th>
+                <th>Stock diff (+/-)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for char, stats in advanced_stats.items() %}
+                <tr>
+                    <td><img height="60px" src="{{ request.app.url_path_for('static', path='/characters_icons/'+char+'.png') }}"></td>
+                    <td><h4>{{ char }}</h4></td>
+                    <td><h4>{{ stats.wins }}</h4></td>
+                    <td><h4>{{ stats.losses }}</h4></td>
+                    <td><h4>{{ ((stats.wins * 100) / (stats.wins + stats.losses))|round|int }}%</h4></td>
+                    <td><h4>{{ stats.avg_dmg }}</h4></td>
+                    <td><h4>{{ stats.avg_dmg_killed }}</h4></td>
+                    <td><h4>{{ stats.stock_diff }}</h4></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endif %}

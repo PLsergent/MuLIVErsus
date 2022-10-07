@@ -43,6 +43,12 @@ h2 {
     margin: 0;
 }
 
+.btn-primary {
+    background-color: #370046 !important;
+    border-color: #370046 !important;
+    color: #fff !important;
+}
+
 .bg-purple {
     background-color: #7823a0;
     cursor: pointer;
@@ -75,6 +81,10 @@ h2 {
 
 .table>tbody>tr>td {
     vertical-align: middle;
+}
+
+.table>:not(caption)>*>th:hover {
+    background-color: #ece4f0 !important;
 }
 
 .breadcrumb {

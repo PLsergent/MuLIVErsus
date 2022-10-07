@@ -1,5 +1,5 @@
 <style>
-    .analyse {
+    .analyze {
         font-size: 1.8em;
         color: #592c66;
         font-weight: 600;
@@ -24,13 +24,13 @@
 </style>
 
 {% if error %}
-    <h5>Error while analyzing previous match</h3>
+    <h5>Error while analyzing previous matches</h5>
 {% else %}
 <div class="table-responsive-lg">
     <table class="table table-hover table-borderless align-middle" style="width:100%">
         <tbody>
             <tr>
-                <td><h5 class="analyse d-inline">Matches analyzed: {{ matches_analyzed }}</h5></td>
+                <td><h5 class="analyze d-inline">Matches analyzed: {{ matches_analyzed }}</h5></td>
                 {% for char, wr in winrates.items() %}
                     <td>
                         <h6 class="ratio d-inline">{{ wr.wins }}/{{ wr.losses }}</h6>

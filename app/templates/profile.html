@@ -101,6 +101,60 @@
     <div class="col-lg-2"><h4>{{ TwoVsTwo_infos.ranked_win }} <small class="text-muted">wins</small></h4></div>
 </div>
 
+<hr class="mt-4">
+
+<h3>
+    Advanced stats 
+    <img width="35px" src="{{ request.app.url_path_for('static', path='/images/graph.png') }}"/>
+    <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" href="#collapseStats" role="button" aria-expanded="false" aria-controls="collapseStats">
+        What is it ?
+    </button>
+</h3>
+
+<div class="collapse mb-2" id="collapseStats">
+    <div class="card card-body">
+        The advanced stats section aims at providing a more detailed view of your stats. It is based on your last matches.
+        <br>
+        MultiVersus doesn't store all your game forever so you can't see your stats from the beginning of your career. Also if
+        you haven't played for a while, the stats will be less accurate since there are less games to analyze.
+        <br>
+        This table lets you see your stats for each matchup you played against for the last X matches. You'll be able to see 
+        on average how much damage was required to take a stock, how much damage your opponent needed to take a stock and the stock diff.
+        <br>
+        <ul>
+            <li>
+                <b>Average damage to take stock</b>: damage on average required to take a stock against this character
+                <ul>
+                    <li>
+                        <b>1v1</b>: total damage divided by number of stocks taken
+                    </li>
+                    <li>
+                        <b>2v2</b>: total damage by you and your teammates divided by number of stocks taken by you and your teammates
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <b>Average damage to lose stock</b>: damage on average required to lose a stock against this character
+                <ul>
+                    <li>
+                        <b>1v1</b>: total ennemy damage divided by number of deaths
+                    </li>
+                    <li>
+                        <b>2v2</b>: total ennemy damage divided by number of deaths by you and your teammates
+                    </li>
+                </ul>
+            </li>
+            <li><b>Stock diff</b>: it is the difference between the number of stocks you took and the number of stocks you lost against this character.</li>
+            
+        </ul>
+    </div>
+</div>
+
+<div id="stats">
+    <h4 class="d-inline text-muted" style="margin-bottom: 0;">Loading advanced stats...</h4>
+    <img class="d-inline" height="60px" src="{{ request.app.url_path_for('static', path='/images/loading.gif') }}" alt="">
+</div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
@@ -109,6 +163,9 @@
 <script>
     jQuery(document).ready(function () {
         jQuery('#characters').DataTable({
+            columnDefs: [
+                { targets: 0, orderable: false }
+            ],
             "buttons": [
                 {
                     extend: 'searchPanes',
@@ -136,7 +193,37 @@
             path.style.strokeDashoffset = Math.max(0, to);   path.nextElementSibling.textContent = `${value}%`;
         });
     }
+    
+    async function stats() {
+        await fetch('/{{ user.get_username() }}/advanced').then(function (response) {
+            // The API call was successful!
+            return response.text();
+        }).then(function (html) {
+            // This is the HTML from our response as a text string
+            document.querySelector('#stats').innerHTML = html
+            progress();
+            jQuery(document).ready(function () {
+                jQuery('#advanced_stats').DataTable({
+                    columnDefs: [
+                        { targets: 0, orderable: false }
+                    ],
+                    "buttons": [
+                        {
+                            extend: 'searchPanes',
+                            className: 'btn btn-danger'
+                        }
+                    ],
+                    "lengthMenu": [5, 10, 25],
+                    order: [[2, 'desc']],
+                });
+            });
+        }).catch(function (err) {
+            // There was an error
+            console.warn('Something went wrong.', err);
+        });
+    }
     progress();
+    stats();
 </script>
 {% endblock %}
 
