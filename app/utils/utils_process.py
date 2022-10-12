@@ -1,3 +1,7 @@
+from datetime import datetime
+from os import listdir, remove
+from os.path import isfile, join, getmtime
+
 from app.mulpyversus.utils import (
     GamemodeMatches,
     GamemodeRank,
@@ -116,7 +120,6 @@ async def get_winrate_against_char(usmh, user_id):
     winrate = {}
     analyzed = 0
     for match in usmh:
-        match = match.rawData
         if "win" in match: 
             won = True if user_id in match["win"] else False
             opponents = match["loss"] if user_id in match["win"] else match["win"]
@@ -139,7 +142,6 @@ async def get_matchup_stats(usmh, user_id):
     matchup_stats_final = {}
     analyzed = 0
     for match in usmh:
-        match = match.rawData
         if "win" in match:
             won = True if user_id in match["win"] else False
             opponents = match["loss"] if user_id in match["win"] else match["win"]
@@ -185,3 +187,10 @@ async def get_matchup_stats(usmh, user_id):
         matchup_stats_final[char]["avg_dmg"] = round(matchup["tot_dmg"] / total, 2) if total != 0 else 0
         matchup_stats_final[char]["avg_dmg_killed"] = round(matchup["tot_dmg_killed"] / total, 2) if total != 0 else 0
     return matchup_stats_final, analyzed
+
+async def clean_cache():
+    cache_path = "./app/cache"
+    cache_files = [f for f in listdir(cache_path) if isfile(join(cache_path, f))]
+    for file in cache_files:
+        if datetime.now().timestamp() - getmtime(join(cache_path, file)) > 86400:
+            remove(join(cache_path, file))

@@ -22,6 +22,7 @@ class Characters(enum.Enum):
     Morty = {"name": "Morty", "slug": "character_c019"}
     Gizmo = {"name": "Gizmo", "slug": "character_C023A"}
     Rick = {"name": "Rick", "slug": "character_C020"}
+    Stripe = {"name": "Stripe", "slug": "character_C023B"}
 
 
 def get_character_from_slug(slug):

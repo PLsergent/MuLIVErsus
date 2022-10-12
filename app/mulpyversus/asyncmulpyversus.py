@@ -1,5 +1,6 @@
 from math import ceil
 import string
+import traceback
 import aiohttp
 import json
 from app.mulpyversus.async_user_matches_history import AsyncUserMatchHistory
@@ -207,14 +208,20 @@ class AsyncMulpyVersus:
     async def close_session(self):
         await self.session.close()
 
-    async def request_data(self, rqst: string):
+    async def request_data(self, rqst: string, session: aiohttp.ClientSession = None):
         """DON'T USE - Used by other classes"""
-        req = await self.session.get(self.url + rqst, headers=self.header)
-        resp = await req.json()
-        if "msg" in resp and "User session" in resp["msg"]:
-            await self.refresh_token()
-            resp = await self.session.get(self.url + rqst, headers=self.header)
-        return resp
+        try:
+            if session is None:
+                session = self.session
+            req = await session.get(self.url + rqst, headers=self.header)
+            resp = await req.json()
+            if "msg" in resp and "User session" in resp["msg"]:
+                await self.refresh_token()
+                resp = await session.get(self.url + rqst, headers=self.header)
+            return resp
+        except:
+            traceback.print_exc()
+            return None
 
     async def get_match_by_id(self, id: string) -> AsyncMatch:
         match = AsyncMatch(id, self)
@@ -239,12 +246,21 @@ class AsyncMulpyVersus:
         search = await search.init()
         return search
 
-    async def get_user_match_history(self, user: User, count: int = 1, all_pages: bool = False) -> AsyncUserMatchHistory:
+    async def get_user_match_history(
+        self,
+        user: User,
+        count: int = 1,
+        all_pages: bool = False,
+        session: aiohttp.ClientSession = None,
+        live: bool = True
+    ) -> AsyncUserMatchHistory:
         """Returns a UserMatchHistory object for that user
         ::
         Usefull if you want all the match history for that user
         """
-        history = AsyncUserMatchHistory(user, self, count=count, all_pages=all_pages)
+        history = AsyncUserMatchHistory(
+            user, self, count=count, all_pages=all_pages, session=session, live=live
+        )
         await history.init()
         return history
 

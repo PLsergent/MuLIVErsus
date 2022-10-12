@@ -1,4 +1,5 @@
 import asyncio
+import aiohttp
 import traceback
 from typing import List, Union
 from fastapi import FastAPI, Request, Form, Query
@@ -18,9 +19,27 @@ from datetime import datetime
 from app.utils.utils_process import *
 
 
-app = FastAPI()
+async def startup_event():
+    await mlpyvrs.init()
+    if "steam_token_stats" in data:
+        await mlpyvrs_stats.init()
+    if "steam_token_live" in data:
+        await mlpyvrs_live.init()
+
+
+async def shutdown_event():
+    await mlpyvrs.close_session()
+    if "steam_token_stats" in data:
+        await mlpyvrs_stats.close_session()
+    if "steam_token_live" in data:
+        await mlpyvrs_live.close_session()
+
+
+app = FastAPI(on_startup=[startup_event], on_shutdown=[shutdown_event])
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
-app.add_middleware(SessionMiddleware, secret_key=f"{os.urandom(24).hex()}")
+SECRET_KEY = os.urandom(24).hex()
+os.makedirs("./app/cache", exist_ok=True)
+app.add_middleware(SessionMiddleware, secret_key=f"{SECRET_KEY}")
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -38,24 +57,6 @@ if "steam_token_live" in data:
     mlpyvrs_live = AsyncMulpyVersus(STEAM_TOKEN_LIVE)
 
 
-@app.on_event("startup")
-async def startup_event():
-    await mlpyvrs.init()
-    if "steam_token_stats" in data:
-        await mlpyvrs_stats.init()
-    if "steam_token_live" in data:
-        await mlpyvrs_live.init()
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    await mlpyvrs.close_session()
-    if "steam_token_stats" in data:
-        await mlpyvrs_stats.close_session()
-    if "steam_token_live" in data:
-        await mlpyvrs_live.close_session()
-
-
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
     return templates.TemplateResponse(
@@ -70,7 +71,9 @@ def login(username: str = Form()):
 
 # /id?slugs=slug1&slugs=slug2
 @app.get("/{id}/winrate")
-async def winrate_against_char(request: Request, id: str, slugs: Union[List[str], None] = Query(default=None)):
+async def winrate_against_char(
+    request: Request, id: str, slugs: Union[List[str], None] = Query(default=None)
+):
     try:
         user = await mlpyvrs.get_user_by_id(id)
         if "code" in user.profileData and user.get_code() == 404:
@@ -78,33 +81,45 @@ async def winrate_against_char(request: Request, id: str, slugs: Union[List[str]
             if user_search_results is not None:
                 user = await user_search_results.get_most_relevant_user()
             else:
-                return templates.TemplateResponse("winrate_live.html", {"request": request, "error": True})
-        
-        if "steam_token_live" in data:
-            match_history = await mlpyvrs_live.get_user_match_history(user, count=200, all_pages=False)
-        else:
-            match_history = await mlpyvrs.get_user_match_history(user, count=200, all_pages=False)
-        history_for_gamemode = await match_history.get_matches()
-        winrate, matches_analyzed = await get_winrate_against_char(history_for_gamemode, user.get_account_id())
+                return templates.TemplateResponse(
+                    "winrate_live.html", {"request": request, "error": True}
+                )
+
+        async with aiohttp.ClientSession() as session:
+            if "steam_token_live" in data:
+                match_history = await mlpyvrs_live.get_user_match_history(
+                    user, count=202, all_pages=False, session=session, live=False
+                )
+            else:
+                match_history = await mlpyvrs.get_user_match_history(
+                    user, count=202, all_pages=False, session=session, live=False
+                )
+            history_for_gamemode, _ = await match_history.get_matches()
+        winrate, matches_analyzed = await get_winrate_against_char(
+            history_for_gamemode, user.get_account_id()
+        )
         winrates = {}
         for slug in slugs:
-            if slug in winrate:
+            if slug in winrate and slug != "":
                 winrates[slug_to_display(slug)] = winrate[slug]
         return templates.TemplateResponse(
             "winrate_live.html",
             {
                 "request": request,
                 "winrates": winrates,
-                "matches_analyzed": matches_analyzed
-            }
+                "matches_analyzed": matches_analyzed,
+            },
         )
     except:
         traceback.print_exc()
-        return templates.TemplateResponse("winrate_live.html", {"request": request, "error": True})
+        return templates.TemplateResponse(
+            "winrate_live.html", {"request": request, "error": True}
+        )
 
 
 @app.get("/{id}")
 async def profile(request: Request, id: str):
+    await clean_cache()
     try:
         user_search_results = await mlpyvrs.get_user_by_username(id)
         if user_search_results is not None:
@@ -203,32 +218,48 @@ async def advanced_profile(request: Request, id: str):
         if (
             user is None or "code" in user.profileData and user.get_code() == 404
         ) or "stat_trackers" not in user.profileData["server_data"]:
-            return templates.TemplateResponse("advanced_stats.html", {"request": request, "error": True})
+            return templates.TemplateResponse(
+                "advanced_stats.html", {"request": request, "error": True}
+            )
         
-        if "steam_token_stats" in data:
-            match_history = await mlpyvrs_stats.get_user_match_history(user, count=30, all_pages=False)
-        else:
-            match_history = await mlpyvrs.get_user_match_history(user, count=30, all_pages=False)
-        history_for_gamemode = await match_history.get_matches()
-        adv_stats, matches_analyzed = await get_matchup_stats(history_for_gamemode, user.get_account_id())
+        async with aiohttp.ClientSession() as session:
+            if "steam_token_stats" in data:
+                match_history = await mlpyvrs_stats.get_user_match_history(
+                    user, count=202, all_pages=False, session=session, live=False
+                )
+            else:
+                match_history = await mlpyvrs.get_user_match_history(
+                    user, count=202, all_pages=False, session=session, live=False
+                )
+            history_for_gamemode, from_cache = await match_history.get_matches()
+        adv_stats, matches_analyzed = await get_matchup_stats(
+            history_for_gamemode, user.get_account_id()
+        )
         advanced_stats = {}
         for char, stats in adv_stats.items():
-            advanced_stats[slug_to_display(char)] = stats
+            if char != "":
+                advanced_stats[slug_to_display(char)] = stats
+        expiration = int((await match_history.get_expiration_date() - datetime.now()).total_seconds()/60) if from_cache else 0
         return templates.TemplateResponse(
             "advanced_profile.html",
             {
                 "request": request,
                 "advanced_stats": advanced_stats,
-                "matches_analyzed": matches_analyzed
-            }
+                "matches_analyzed": matches_analyzed,
+                "from_cache": from_cache,
+                "expiration": expiration,
+            },
         )
     except:
         traceback.print_exc()
-        return templates.TemplateResponse("advanced_profile.html", {"request": request, "error": True})
+        return templates.TemplateResponse(
+            "advanced_profile.html", {"request": request, "error": True}
+        )
 
 
 @app.get("/{id}/live")
 async def live(request: Request, id: str):
+    await clean_cache()
     try:
         user = await mlpyvrs.get_user_by_id(id)
         if "code" in user.profileData and user.get_code() == 404:
@@ -245,7 +276,7 @@ async def live(request: Request, id: str):
                     },
                 )
 
-        user_match_history = await mlpyvrs.get_user_match_history(user)
+        user_match_history = await mlpyvrs.get_user_match_history(user, live=True)
         last_match = await user_match_history.get_last_match()
 
         if last_match is None:
@@ -312,7 +343,13 @@ async def live(request: Request, id: str):
                         )
                     )
         players = await asyncio.gather(*jobs)
-        slugs_url_query = "?slugs=" + "&slugs=".join([player["char_slug"] for player in players if player["id"] != user.get_account_id()])
+        slugs_url_query = "?slugs=" + "&slugs=".join(
+            [
+                player["char_slug"]
+                for player in players
+                if player["id"] != user.get_account_id()
+            ]
+        )
         timedate = datetime.strptime(time, "%Y-%m-%dT%H:%M:%S+00:00")
 
     except:
@@ -334,6 +371,6 @@ async def live(request: Request, id: str):
             "user": user,
             "time": timedate,
             "players": players,
-            "slugs_url_query": slugs_url_query
+            "slugs_url_query": slugs_url_query,
         },
     )

@@ -3,7 +3,7 @@
 {% block content %}
 <link href="{{ request.app.url_path_for('static', path='/style/profile.css') }}" rel="stylesheet">
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css"/>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css" />
 <link href="{{ request.app.url_path_for('static', path='/style/datatable.css') }}" rel="stylesheet">
 <link href="{{ request.app.url_path_for('static', path='/style/progress-bar.css') }}" rel="stylesheet">
 
@@ -19,23 +19,39 @@
     <div class="col-lg-10">
         <div onclick="loading()" class="card mb-4 profile-card">
             <div class="card-body">
-                <a class="stretched-link" href="/{{ user.get_account_id() }}/live"><h2>{{ username | title }} <span>Live Tracker</span></h2></a>
+                <a class="stretched-link" href="/{{ user.get_account_id() }}/live">
+                    <h2>{{ username | title }} <span>Live Tracker</span></h2>
+                </a>
                 <div class="row mt-1">
-                    <div class="col-lg-15"><h4>{{ user.get_user_level() }} <small class="text-muted">lvl</small></h4></div>
-                    <div class="col-lg-2"><h4>{{ total_win }} <small class="text-muted">wins</small></h4></div>
-                    <div class="col-lg-2"><h4>{{ total_loss }} <small class="text-muted">losses</small></h4></div>
-                    <div class="col-lg-2"><h4>{{ total_win_percentage }}<small class="text-muted">%</small></h4></div>
-                    <div class="col-lg-3"><h4>{{ user.get_total_ringouts() }} <small class="text-muted">ringouts</small></h4></div>
-                    <div class="col-lg-1" style="text-align: right"><h4><i class="fa-solid fa-arrow-pointer"></i></h4></div>
+                    <div class="col-lg-15">
+                        <h4>{{ user.get_user_level() }} <small class="text-muted">lvl</small></h4>
+                    </div>
+                    <div class="col-lg-2">
+                        <h4>{{ total_win }} <small class="text-muted">wins</small></h4>
+                    </div>
+                    <div class="col-lg-2">
+                        <h4>{{ total_loss }} <small class="text-muted">losses</small></h4>
+                    </div>
+                    <div class="col-lg-2">
+                        <h4>{{ total_win_percentage }}<small class="text-muted">%</small></h4>
+                    </div>
+                    <div class="col-lg-3">
+                        <h4>{{ user.get_total_ringouts() }} <small class="text-muted">ringouts</small></h4>
+                    </div>
+                    <div class="col-lg-1" style="text-align: right">
+                        <h4><i class="fa-solid fa-arrow-pointer"></i></h4>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-2">
-        <svg class="mt-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" data-value="{{ total_win_percentage }}">
+        <svg class="mt-2" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+            data-value="{{ total_win_percentage }}">
             <circle r="45" cx="50" cy="50" />
             <!-- 282.78302001953125 is auto-calculated by path.getTotalLength() -->
-            <path class="meter" d="M5,50a45,45 0 1,0 90,0a45,45 0 1,0 -90,0" stroke-linecap="round" stroke-linejoin="round" stroke-dashoffset="282.78302001953125" stroke-dasharray="282.78302001953125" />
+            <path class="meter" d="M5,50a45,45 0 1,0 90,0a45,45 0 1,0 -90,0" stroke-linecap="round"
+                stroke-linejoin="round" stroke-dashoffset="282.78302001953125" stroke-dasharray="282.78302001953125" />
             <!-- Value automatically updates based on data-value set above -->
             <text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="20"></text>
         </svg>
@@ -43,188 +59,245 @@
 </div>
 
 
-<h3>Top characters <img width="30px" src="{{ request.app.url_path_for('static', path='/images/character.png') }}"></img></h2>
-<hr>
+<h3>Top characters <img width="30px" src="{{ request.app.url_path_for('static', path='/images/character.png') }}"></img>
+    </h2>
+    <hr>
 
-<div class="table-responsive-lg">
-<table id="characters" class="table table-hover table-borderless align-middle" style="width:100%">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Wins <i class="fas fa-trophy"></i></th>
-            <th>1's mmr <i class="fas fa-award"></i></th>
-            <th>1's char rank <i class="fas fa-list"></i></th>
-            <th>2's mmr <i class="fas fa-award"></i></th>
-            <th>2's char rank <i class="fas fa-list-ul"></i></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for char in top_characters %}
-            <tr>
-                <td><img height="60px" src="{{ request.app.url_path_for('static', path='/characters_icons/'+char.name+'.png') }}"></td>
-                <td><h4>{{ char.name }}</h4></td>
-                <td><h4>{{ char.wins }}</h4></td>
-                <td><h4>{{ char.OvO_MMR }}</h4></td>
-                <td><h4>{{ char.OvO_rank }}</h4></td>
-                <td><h4>{{ char.TvT_MMR }}</h4></td>
-                <td><h4>{{ char.TvT_rank }}</h4></td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-</div>
-
-<hr class="mt-4">
-
-<h3>1v1 <img width="35px" src="{{ request.app.url_path_for('static', path='/images/fight1.png') }}"></img></h3>
-<div class="row">
-    <div class="col-lg-05">
-        <img height="60px" src="{{ request.app.url_path_for('static', path='/characters_icons/'+OneVsOne_infos.char+'.png') }}">
+    <div class="table-responsive-lg">
+        <table id="characters" class="table table-hover table-borderless align-middle" style="width:100%">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Wins <i class="fas fa-trophy"></i></th>
+                    <th>1's mmr <i class="fas fa-award"></i></th>
+                    <th>1's char rank <i class="fas fa-list"></i></th>
+                    <th>2's mmr <i class="fas fa-award"></i></th>
+                    <th>2's char rank <i class="fas fa-list-ul"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for char in top_characters %}
+                <tr>
+                    <td><img height="60px"
+                            src="{{ request.app.url_path_for('static', path='/characters_icons/'+char.name+'.png') }}">
+                    </td>
+                    <td>
+                        <h4>{{ char.name }}</h4>
+                    </td>
+                    <td>
+                        <h4>{{ char.wins }}</h4>
+                    </td>
+                    <td>
+                        <h4>{{ char.OvO_MMR }}</h4>
+                    </td>
+                    <td>
+                        <h4>{{ char.OvO_rank }}</h4>
+                    </td>
+                    <td>
+                        <h4>{{ char.TvT_MMR }}</h4>
+                    </td>
+                    <td>
+                        <h4>{{ char.TvT_rank }}</h4>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <div class="col-lg-3"><h4>{{ OneVsOne_infos.char }}</h4></div>
-    <div class="col-lg-2"><h4>{{ OneVsOne_infos.rating }} <small class="text-muted">mmr</small></h4></div>
-    <div class="col-lg-3"><h4>{{ OneVsOne_infos.rank }} <small class="text-muted">global #</small></h4></div>
-    <div class="col-lg-2"><h4>{{ OneVsOne_infos.ranked_win }} <small class="text-muted">wins</small></h4></div>
-</div>
 
-<hr class="mt-4">
+    <hr class="mt-4">
 
-<h3>2v2 <img width="35px" src="{{ request.app.url_path_for('static', path='/images/fight.png') }}"></img></h3>
-<div class="row">
-    <div class="col-lg-05">
-        <img height="60px" src="{{ request.app.url_path_for('static', path='/characters_icons/'+TwoVsTwo_infos.char+'.png') }}">
+    <h3>1v1 <img width="35px" src="{{ request.app.url_path_for('static', path='/images/fight1.png') }}"></img></h3>
+    <div class="row">
+        <div class="col-lg-05">
+            <img height="60px"
+                src="{{ request.app.url_path_for('static', path='/characters_icons/'+OneVsOne_infos.char+'.png') }}">
+        </div>
+        <div class="col-lg-3">
+            <h4>{{ OneVsOne_infos.char }}</h4>
+        </div>
+        <div class="col-lg-2">
+            <h4>{{ OneVsOne_infos.rating }} <small class="text-muted">mmr</small></h4>
+        </div>
+        <div class="col-lg-3">
+            <h4>{{ OneVsOne_infos.rank }} <small class="text-muted">global #</small></h4>
+        </div>
+        <div class="col-lg-2">
+            <h4>{{ OneVsOne_infos.ranked_win }} <small class="text-muted">wins</small></h4>
+        </div>
     </div>
-    <div class="col-lg-3"><h4>{{ TwoVsTwo_infos.char }}</h4></div>
-    <div class="col-lg-2"><h4>{{ TwoVsTwo_infos.rating }} <small class="text-muted">mmr</small></h4></div>
-    <div class="col-lg-3"><h4>{{ TwoVsTwo_infos.rank }} <small class="text-muted">global #</small></h4></div>
-    <div class="col-lg-2"><h4>{{ TwoVsTwo_infos.ranked_win }} <small class="text-muted">wins</small></h4></div>
-</div>
 
-<hr class="mt-4">
+    <hr class="mt-4">
 
-<h3>
-    Advanced stats 
-    <img width="35px" src="{{ request.app.url_path_for('static', path='/images/graph.png') }}"/>
-    <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" href="#collapseStats" role="button" aria-expanded="false" aria-controls="collapseStats">
-        What is it ?
-    </button>
-</h3>
+    <h3>2v2 <img width="35px" src="{{ request.app.url_path_for('static', path='/images/fight.png') }}"></img></h3>
+    <div class="row">
+        <div class="col-lg-05">
+            <img height="60px"
+                src="{{ request.app.url_path_for('static', path='/characters_icons/'+TwoVsTwo_infos.char+'.png') }}">
+        </div>
+        <div class="col-lg-3">
+            <h4>{{ TwoVsTwo_infos.char }}</h4>
+        </div>
+        <div class="col-lg-2">
+            <h4>{{ TwoVsTwo_infos.rating }} <small class="text-muted">mmr</small></h4>
+        </div>
+        <div class="col-lg-3">
+            <h4>{{ TwoVsTwo_infos.rank }} <small class="text-muted">global #</small></h4>
+        </div>
+        <div class="col-lg-2">
+            <h4>{{ TwoVsTwo_infos.ranked_win }} <small class="text-muted">wins</small></h4>
+        </div>
+    </div>
 
-<div class="collapse mb-2" id="collapseStats">
-    <div class="card card-body">
-        The advanced stats section aims at providing a more detailed view of your stats. It is based on your last matches.
-        <br>
-        MultiVersus doesn't store all your game forever so you can't see your stats from the beginning of your career. Also if
-        you haven't played for a while, the stats will be less accurate since there are less games to analyze.
-        <br>
-        This table lets you see your stats for each matchup you played against for the last X matches. You'll be able to see 
-        on average how much damage was required to take a stock, how much damage your opponent needed to take a stock and the stock diff.
-        <br>
-        <ul>
-            <li>
-                <b>Average damage to take stock</b>: damage on average required to take a stock against this character
+    <hr class="mt-4">
+
+    <h3>
+        Advanced stats
+        <img width="35px" src="{{ request.app.url_path_for('static', path='/images/graph.png') }}" />
+        <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" href="#collapseStats" role="button"
+            aria-expanded="false" aria-controls="collapseStats">
+            What is it ?
+        </button>
+    </h3>
+
+    <div class="collapse mb-2" id="collapseStats">
+        <div class="card card-body">
+            The advanced stats section aims at providing a more detailed view of your stats. It is based on your last
+            matches.
+            <br>
+            MultiVersus doesn't store all your game forever so you can't see your stats from the beginning of your
+            career. Also if
+            you haven't played for a while, the stats will be less accurate since there are less games to analyze.
+            <br>
+            This table lets you see your stats for each matchup you played against for the last X matches. You'll be
+            able to see
+            on average how much damage was required to take a stock, how much damage your opponent needed to take a
+            stock and the stock diff.
+            <br>
+            <ul>
+                <li>
+                    <b>Average damage to take stock</b>: damage on average required to take a stock against this
+                    character
+                    <ul>
+                        <li>
+                            <b>1v1</b>: total damage divided by number of stocks you took (ex: 300 dmg / 3 stocks = 100
+                            dmg to take a stock)
+                        </li>
+                        <li>
+                            <b>2v2</b>: total damage by you and your teammates divided by number of stocks taken by you
+                            and your teammates (ex: You: 200 dmg TM: 100 dmg / 3 total stocks = 100 dmg to take a stock)
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <b>Average damage to lose stock</b>: damage on average required to lose a stock against this
+                    character
+                    <ul>
+                        <li>
+                            <b>1v1</b>: total ennemy damage divided by number of deaths (ex: opponent: 300 dmg / 3
+                            deaths = 100 dmg to kill you)
+                        </li>
+                        <li>
+                            <b>2v2</b>: total ennemy damage divided by number of deaths by you and your teammates (ex:
+                            total opponent: 300 dmg / You: 2 deaths TM: 1 death = 100 dmg to kill you)
+                        </li>
+                    </ul>
+                </li>
+                <li><b>Stock diff</b>: it is the difference between the number of stocks you took and the number of
+                    stocks you lost against this character.</li>
                 <ul>
                     <li>
-                        <b>1v1</b>: total damage divided by number of stocks taken
+                        <b>1v1</b>: number of stocks taken minus number of deaths
                     </li>
                     <li>
-                        <b>2v2</b>: total damage by you and your teammates divided by number of stocks taken by you and your teammates
+                        <b>2v2</b>: number of stocks taken by the team minus number of stocks taken by the ennemy team <br>
+                        <i>This is why this number can seem pretty high: if you play 2v2 a lot and you 4-0 someone
+                            the stock diff for both ennemy characters will count as +4.
+                        </i>
                     </li>
                 </ul>
-            </li>
-            <li>
-                <b>Average damage to lose stock</b>: damage on average required to lose a stock against this character
-                <ul>
-                    <li>
-                        <b>1v1</b>: total ennemy damage divided by number of deaths
-                    </li>
-                    <li>
-                        <b>2v2</b>: total ennemy damage divided by number of deaths by you and your teammates
-                    </li>
-                </ul>
-            </li>
-            <li><b>Stock diff</b>: it is the difference between the number of stocks you took and the number of stocks you lost against this character.</li>
-            
-        </ul>
+            </ul>
+            <b>The stats are refreshed once per hour to not overload the API.</b>
+        </div>
     </div>
-</div>
 
-<div id="stats">
-    <h4 class="d-inline text-muted" style="margin-bottom: 0;">Loading advanced stats...</h4>
-    <img class="d-inline" height="60px" src="{{ request.app.url_path_for('static', path='/images/loading.gif') }}" alt="">
-</div>
+    <div id="stats">
+        <h4 class="d-inline text-muted" style="margin-bottom: 0;">Loading advanced stats...</h4>
+        <img class="d-inline" height="60px" src="{{ request.app.url_path_for('static', path='/images/loading.gif') }}"
+            alt="">
+    </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
 
-{% block javascript %}
-<script>
-    jQuery(document).ready(function () {
-        jQuery('#characters').DataTable({
-            columnDefs: [
-                { targets: 0, orderable: false }
-            ],
-            "buttons": [
-                {
-                    extend: 'searchPanes',
-                    className: 'btn btn-danger'
-                }
-            ],
-            "lengthMenu": [3, 5, 10]
-        });
-    });
-
-    function progress() {
-        // Get all the Meters
-        const meters = document.querySelectorAll('svg[data-value] .meter');
-
-        meters.forEach((path) => {
-            // Get the length of the path
-            let length = path.getTotalLength();
-            // Get the value of the meter
-            let value = parseInt(path.parentNode.getAttribute('data-value'));
-            // Calculate the percentage of the total length
-            let to = length * ((100 - value) / 100);
-            // Trigger Layout in Safari hack https://jakearchibald.com/2013/animated-line-drawing-svg/
-            path.getBoundingClientRect();
-            // Set the Offset
-            path.style.strokeDashoffset = Math.max(0, to);   path.nextElementSibling.textContent = `${value}%`;
-        });
-    }
-    
-    async function stats() {
-        await fetch('/{{ user.get_username() }}/advanced').then(function (response) {
-            // The API call was successful!
-            return response.text();
-        }).then(function (html) {
-            // This is the HTML from our response as a text string
-            document.querySelector('#stats').innerHTML = html
-            progress();
-            jQuery(document).ready(function () {
-                jQuery('#advanced_stats').DataTable({
-                    columnDefs: [
-                        { targets: 0, orderable: false }
-                    ],
-                    "buttons": [
-                        {
-                            extend: 'searchPanes',
-                            className: 'btn btn-danger'
-                        }
-                    ],
-                    "lengthMenu": [5, 10, 25],
-                    order: [[2, 'desc']],
-                });
+    {% block javascript %}
+    <script>
+        jQuery(document).ready(function () {
+            jQuery('#characters').DataTable({
+                columnDefs: [
+                    { targets: 0, orderable: false }
+                ],
+                "buttons": [
+                    {
+                        extend: 'searchPanes',
+                        className: 'btn btn-danger'
+                    }
+                ],
+                "lengthMenu": [3, 5, 10]
             });
-        }).catch(function (err) {
-            // There was an error
-            console.warn('Something went wrong.', err);
         });
-    }
-    progress();
-    stats();
-</script>
-{% endblock %}
 
-{% endblock %}
+        function progress() {
+            // Get all the Meters
+            const meters = document.querySelectorAll('svg[data-value] .meter');
+
+            meters.forEach((path) => {
+                // Get the length of the path
+                let length = path.getTotalLength();
+                // Get the value of the meter
+                let value = parseInt(path.parentNode.getAttribute('data-value'));
+                // Calculate the percentage of the total length
+                let to = length * ((100 - value) / 100);
+                // Trigger Layout in Safari hack https://jakearchibald.com/2013/animated-line-drawing-svg/
+                path.getBoundingClientRect();
+                // Set the Offset
+                path.style.strokeDashoffset = Math.max(0, to); path.nextElementSibling.textContent = `${value}%`;
+            });
+        }
+
+        async function stats() {
+            await fetch('/{{ user.get_username() }}/advanced').then(function (response) {
+                // The API call was successful!
+                return response.text();
+            }).then(function (html) {
+                // This is the HTML from our response as a text string
+                document.querySelector('#stats').innerHTML = html
+                progress();
+                jQuery(document).ready(function () {
+                    jQuery('#advanced_stats').DataTable({
+                        columnDefs: [
+                            { targets: 0, orderable: false }
+                        ],
+                        "buttons": [
+                            {
+                                extend: 'searchPanes',
+                                className: 'btn btn-danger'
+                            }
+                        ],
+                        "lengthMenu": [5, 10, 25],
+                        order: [[2, 'desc']],
+                    });
+                });
+            }).catch(function (err) {
+                // There was an error
+                console.warn('Something went wrong.', err);
+            });
+        }
+        progress();
+        stats();
+    </script>
+    {% endblock %}
+
+    {% endblock %}

@@ -15,7 +15,7 @@
 <div class="card mb-4 live-card-title">
     <div class="card-body">
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-5">
                 <h5 class="card-title">Match {{ user.get_username() | title }} - <b>{{ time.strftime('%Y-%m-%d') }}</b> <i class="fa-solid fa-calendar"></i></h5>
                 <h1>
                     {{ title }}
@@ -28,7 +28,7 @@
                     {% endif %}
                 </h1>
             </div>
-            <div id="winrate" class="col-lg-8" style="display: flex; justify-content: right; align-items: center;">
+            <div id="winrate" class="col-lg-7" style="display: flex; justify-content: right; align-items: center;">
                 <h4 class="d-inline text-muted" style="margin-bottom: 0;">Loading matchup winrate...</h4>
                 <img class="d-inline" height="60px" src="{{ request.app.url_path_for('static', path='/images/loading.gif') }}" alt="">
             </div>

@@ -1,8 +1,10 @@
 {% if error %}
-    <h5>Error while analyzing previous matches</h5>
+<h5>Error while analyzing previous matches</h5>
 {% else %}
-<h4 class="text-muted">{{ matches_analyzed }} matches analyzed</h4>
-<p class="mb-3 text-bold">Stats when playing against:</p>
+<h4 class="text-muted">{{ matches_analyzed }} matches analyzed <small class="text-muted">{% if from_cache %}from cache
+        (refresh in {{ expiration }} min <i class="fas fa-hourglass-start"></i>){% endif
+        %}</small></h4>
+<p class="mb-3" style="font-size: large;"><b>Stats when playing against:</b></p>
 <div class="table-responsive-lg">
     <table id="advanced_stats" class="table table-hover table-borderless align-middle" style="width:100%">
         <thead>
@@ -19,18 +21,33 @@
         </thead>
         <tbody>
             {% for char, stats in advanced_stats.items() %}
-                <tr>
-                    <td><img height="60px" src="{{ request.app.url_path_for('static', path='/characters_icons/'+char+'.png') }}"></td>
-                    <td><h4>{{ char }}</h4></td>
-                    <td><h4>{{ stats.wins }}</h4></td>
-                    <td><h4>{{ stats.losses }}</h4></td>
-                    <td><h4>{{ ((stats.wins * 100) / (stats.wins + stats.losses))|round|int }}%</h4></td>
-                    <td><h4>{{ stats.avg_dmg }}</h4></td>
-                    <td><h4>{{ stats.avg_dmg_killed }}</h4></td>
-                    <td><h4>{{ stats.stock_diff }}</h4></td>
-                </tr>
+            <tr>
+                <td><img height="60px"
+                        src="{{ request.app.url_path_for('static', path='/characters_icons/'+char+'.png') }}"></td>
+                <td>
+                    <h4>{{ char }}</h4>
+                </td>
+                <td>
+                    <h4>{{ stats.wins }}</h4>
+                </td>
+                <td>
+                    <h4>{{ stats.losses }}</h4>
+                </td>
+                <td>
+                    <h4>{{ ((stats.wins * 100) / (stats.wins + stats.losses))|round|int }}%</h4>
+                </td>
+                <td>
+                    <h4>{{ stats.avg_dmg }}</h4>
+                </td>
+                <td>
+                    <h4>{{ stats.avg_dmg_killed }}</h4>
+                </td>
+                <td>
+                    <h4>{{ stats.stock_diff }}</h4>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
-    </div>
+</div>
 {% endif %}

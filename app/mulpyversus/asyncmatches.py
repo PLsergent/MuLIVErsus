@@ -83,8 +83,8 @@ class AsyncMatch:
         self.mlpyvrs = mlpyvrs
         self.id = id
 
-    async def init(self):
-        self.rawData = await self.mlpyvrs.request_data("matches/" + self.id)
+    async def init(self, session: aiohttp.ClientSession = None):
+        self.rawData = await self.mlpyvrs.request_data("matches/" + self.id, session=session)
         if type(self.rawData) is aiohttp.ClientResponse:
             print("Error while fetching data: match")
             self.rawData = await self.rawData.json()
@@ -104,7 +104,9 @@ class AsyncMatch:
         Examples:
             >>> amounfOfPlayer = matches.get_player_ammount_in_match()
         """
-        return len(self.rawData["server_data"]["PlayerData"])
+        if self.rawData and "server_data" in self.rawData and "PlayerMatchData" in self.rawData["server_data"]:
+            return len(self.rawData["server_data"]["PlayerData"])
+        return 0
 
     def get_match_id(self) -> string:
         """Gets the id of the match.
