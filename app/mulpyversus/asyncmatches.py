@@ -104,7 +104,7 @@ class AsyncMatch:
         Examples:
             >>> amounfOfPlayer = matches.get_player_ammount_in_match()
         """
-        if self.rawData and "server_data" in self.rawData and "PlayerMatchData" in self.rawData["server_data"]:
+        if self.rawData and "server_data" in self.rawData and "PlayerData" in self.rawData["server_data"]:
             return len(self.rawData["server_data"]["PlayerData"])
         return 0
 
