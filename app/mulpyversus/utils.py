@@ -22,6 +22,7 @@ class Characters(enum.Enum):
     Morty = {"name": "Morty", "slug": "character_c019"}
     Gizmo = {"name": "Gizmo", "slug": "character_C023A"}
     Rick = {"name": "Rick", "slug": "character_C020"}
+    BlackAdam = {"name": "Black Adam", "slug": "character_C021"}
     Stripe = {"name": "Stripe", "slug": "character_C023B"}
 
 

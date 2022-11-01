@@ -198,9 +198,9 @@ class Match:
         if self.rawData and "data" in self.rawData:
             if self.rawData["data"] and "ratingUpdates" in self.rawData["data"]:
                 for data in self.rawData["data"]["ratingUpdates"][
-                    "playerRatingChanges"
+                    "player_rating_changes"
                 ]:
-                    if data["playerAccountID"] == id:
+                    if data["player_account_id"] == id:
                         preMatchRating = (
                             data["preMatchRating"]["mean"]
                             if "preMatchRating" in data
