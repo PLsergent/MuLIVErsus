@@ -201,15 +201,15 @@ class Match:
                     "player_rating_changes"
                 ]:
                     if data["player_account_id"] == id:
-                        preMatchRating = (
-                            data["preMatchRating"]["mean"]
-                            if "preMatchRating" in data
+                        pre_match_rating = (
+                            data["pre_match_rating"]["mean"]
+                            if "pre_match_rating" in data
                             else 0
                         )
-                        postMatchRating = (
-                            data["postMatchRating"]["mean"]
-                            if "postMatchRating" in data
+                        post_match_rating = (
+                            data["post_match_rating"]["mean"]
+                            if "post_match_rating" in data
                             else 0
                         )
-                        return round(postMatchRating - preMatchRating, 0)
+                        return round(post_match_rating - pre_match_rating, 0)
         return None
