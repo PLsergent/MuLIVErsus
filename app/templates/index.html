@@ -11,7 +11,7 @@
     <meta name="google-site-verification" content="Vfs1YZFuEZHDmaMqCX_Aejftyh1apdL2SkCqTuApSmU" />
 
     <link rel="icon" href="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}" type="image/x-icon">
-
+    
     <link href="{{ request.app.url_path_for('static', path='/style/index.css') }}" rel="stylesheet">
 
     <title>MuLIVErsus</title>
@@ -23,7 +23,8 @@
             <span>
                 <img width="65px" style="border-radius: 40px;margin-top: 30px;"
                     src="{{ request.app.url_path_for('static', path='/images/steven.jpg') }}" /> &nbsp
-                <img width="180px" src="{{ request.app.url_path_for('static', path='/images/multiversus.png') }}" /> &nbsp
+                <img width="180px" src="{{ request.app.url_path_for('static', path='/images/multiversus.png') }}" />
+                &nbsp
                 <a href="https://discord.gg/UjNgk77BmX" target="_blank"><img
                         src="{{ request.app.url_path_for('static', path='/images/discord_logo_short.png') }}"
                         alt="Discord server" style="height: 35px !important;"></a> &nbsp
@@ -35,14 +36,14 @@
             <div class="login-box-login">
                 <h1>MuLIVErsus</h1>
                 <h2>Your Multiversus tracker.</h2>
-                <form method="post">
+                <form id="form" method="post">
                     <div>
                         <label for="username"> In game username</label>
-                        <input for="username" class="input-username" type="text" name="username" spellcheck="false"
-                            required />
+                        <input for="username" id="username" class="input-username" type="text" name="username"
+                            spellcheck="false" required />
                     </div>
                     <div>
-                        <input onclick="loading()" type="submit" value="GET YOUR STATS" class="btn" />
+                        <input onclick="loading_home()" type="submit" value="GET YOUR STATS" class="btn" />
                     </div>
                 </form>
                 <div class="alternate-text">About</div>
@@ -75,7 +76,10 @@
 
 
 <script>
-    function loading() {
+    function loading_home() {
+        // check if the input username is empty
+        if (document.getElementById("username").value == "")
+            return;
         document.getElementById("loader").style.display = "block";
         document.getElementById("main").style.display = "none";
     }
